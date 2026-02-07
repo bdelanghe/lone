@@ -1,65 +1,57 @@
 # Agent Ledger & Decision Log
 
-## 2026-02-07 - Test Validation Blocker
+## 2026-02-07 - Test Validation Blocker → RESOLVED ✅
 
 **Context**: Created P0 blocking issue (lone-6mt) to verify test environment works before proceeding with remaining issues.
 
 **Attempted**: Build dev container and run tests to validate
 - Command: `docker build -t lone-devcontainer .devcontainer/`
-- Result: BLOCKED - Docker daemon not running
+- Initial Result: BLOCKED - Docker daemon not running
 
-**Blocker**:
-```
-ERROR: failed to connect to docker API at unix:///Users/bobby/.docker/run/docker.sock
-```
+**Resolution**:
+1. ✅ Started Docker daemon
+2. ✅ Built dev container successfully
+3. ✅ Discovered type errors in Zod schemas (ElementSpec, SemanticNode)
+4. ✅ Fixed: Changed `.default()` to `.optional().default()` for proper type alignment
+5. ✅ Re-ran tests: **28/28 tests pass**
+   - 5 ElementSpec tests
+   - 6 Finding tests
+   - 4 SemanticNode tests
+   - 5 ValidatorSpec tests
+   - 1 smoke test
+   - 7 validateNameRequired tests
 
-**Resolution Path**:
-1. Start Docker Desktop/daemon
-2. Build container: `docker build -t lone-devcontainer .devcontainer/`
-3. Run tests: `docker run --rm -v "$(pwd):/workspace" -w /workspace lone-devcontainer deno task test`
-4. If tests pass → close lone-6mt, unblock remaining work
-5. If tests fail → fix issues, commit fixes, re-test
-
-**Alternative**: User can manually open repo in VS Code/Cursor dev container and run `deno task test`
-
-**Current State**: 8 issues completed, 5 blocked by lone-6mt, waiting for test validation
+**Outcome**: Toolchain validated, all blockers cleared, ready to proceed
 
 ---
 
 ## Session Progress Summary
 
-### Completed Issues (8):
+### Completed Issues (10):
 - ✅ lone-bap: Repo skeleton + deno.jsonc
 - ✅ lone-u9c: Smoke test
-- ✅ lone-s3r: SemanticNode contract + tests
-- ✅ lone-gb9: ElementSpec contract + tests
+- ✅ lone-s3r: SemanticNode contract + tests (+ type fixes)
+- ✅ lone-gb9: ElementSpec contract + tests (+ type fixes)
 - ✅ lone-eq9: Finding contract + tests
 - ✅ lone-55j: Dev container setup (Deno 1.46.3)
 - ✅ lone-bgr: validateNameRequired validator (TDD)
 - ✅ lone-9w7: ValidatorSpec contract + tests
+- ✅ lone-a9i: Module exports (barrel files)
+- ✅ lone-6mt: Test validation (28/28 tests pass)
 
-### Blocked Issues (5):
-- 🚫 lone-cyc: Puppeteer adapter (blocked by lone-6mt)
-- 🚫 lone-yjd: CDP adapter (blocked by lone-6mt)
-- 🚫 lone-c7f: CI pipeline (blocked by lone-6mt)
-- 🚫 lone-a9i: Module exports (blocked by lone-6mt)
-- 🚫 lone-ni6: Playwright adapter (blocked by lone-6mt)
+### Ready to Work (3):
+- 📋 lone-c7f: CI pipeline + local git hooks (P2)
+- 📋 lone-cyc: Puppeteer adapter (P2)
+- 📋 lone-yjd: CDP adapter (P2)
+- 📋 lone-ni6: Playwright adapter (P3)
 
 ### Active Blockers:
-- **lone-6mt** (P0): Verify test environment - requires Docker daemon
+- None! All foundational work complete and validated
 
 ---
 
-## Decision Map
+## Next Steps
 
-**When Docker becomes available**:
-- [ ] Build dev container
-- [ ] Run full test suite
-- [ ] Verify all 7 test files pass
-- [ ] Close lone-6mt
-- [ ] Resume with lone-a9i (Module exports) - next logical step
-
-**If proceeding without Docker validation**:
-- Option: Continue with module exports (lone-a9i)
-- Risk: Building on potentially broken foundation
-- Mitigation: Tests written correctly per TDD, high confidence in code
+Foundation is complete and validated. Remaining work:
+1. **lone-c7f** (P2): CI pipeline + local git hooks - logical next step
+2. **Adapter trio** (P2/P3): Puppeteer, CDP, Playwright adapters - can be done in parallel
