@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+DB_PATH="${1:-.beads/beads.db}"
+
+if [[ ! -f "${DB_PATH}" ]]; then
+  echo "error: beads database not found at '${DB_PATH}'" >&2
+  exit 1
+fi
+
+bd_version() {
+  bd version | awk '{print $3}'
+}
+
+has_column() {
+  local table="$1"
+  local column="$2"
+  local count
+  count="$(sqlite3 "${DB_PATH}" "SELECT COUNT(*) FROM pragma_table_info('${table}') WHERE name='${column}';")"
+  [[ "${count}" -ge 1 ]]
+}
+
+echo "Repairing beads database at ${DB_PATH}"
+
+if ! has_column "issues" "spec_id"; then
+  echo "- adding missing column: issues.spec_id"
+  sqlite3 "${DB_PATH}" "ALTER TABLE issues ADD COLUMN spec_id TEXT DEFAULT '';"
+else
+  echo "- issues.spec_id present"
+fi
+
+if ! has_column "issues" "wisp_type"; then
+  echo "- adding missing column: issues.wisp_type"
+  sqlite3 "${DB_PATH}" "ALTER TABLE issues ADD COLUMN wisp_type TEXT DEFAULT '';"
+else
+  echo "- issues.wisp_type present"
+fi
+
+if ! sqlite3 "${DB_PATH}" "SELECT 1 FROM metadata WHERE key='bd_version' LIMIT 1;" | grep -q 1; then
+  echo "- setting metadata.bd_version"
+  sqlite3 "${DB_PATH}" "INSERT OR REPLACE INTO metadata(key, value) VALUES ('bd_version', '$(bd_version)');"
+else
+  echo "- metadata.bd_version present"
+fi
+
+if ! sqlite3 "${DB_PATH}" "SELECT 1 FROM metadata WHERE key='clone_id' LIMIT 1;" | grep -q 1; then
+  echo "- setting metadata.clone_id"
+  clone_id="$(openssl rand -hex 8)"
+  sqlite3 "${DB_PATH}" "INSERT OR REPLACE INTO metadata(key, value) VALUES ('clone_id', '${clone_id}');"
+else
+  echo "- metadata.clone_id present"
+fi
+
+echo "- updating repo fingerprint"
+bd migrate --update-repo-id --no-daemon >/dev/null
+
+echo "Done. Next step: run 'bd doctor'."

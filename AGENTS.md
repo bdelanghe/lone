@@ -13,6 +13,19 @@ bd close <id>         # Complete work
 bd sync               # Sync with git
 ```
 
+## Beads Recovery
+
+If `bd` fails with SQLite schema/version errors (for example, `no such column:
+i.spec_id` or `Unable to read database version`), run:
+
+```bash
+./scripts/bd-repair
+bd doctor
+```
+
+This repairs common legacy DB mismatches in-place so `bd ready` and `bd create`
+work again.
+
 ## Agent Confusion = Development Issue
 
 **CRITICAL:** When you (as an agent) get confused, encounter unclear tooling,
