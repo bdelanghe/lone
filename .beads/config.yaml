@@ -69,3 +69,5 @@ sync-branch: "beads-sync"
 daemon.auto-commit: true
 
 daemon.auto-push: true
+
+daemon.auto-pull: true
