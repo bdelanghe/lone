@@ -16,7 +16,7 @@ Last refreshed: 2026-02-07
 | --- | --- | --- | --- | ---: |
 | `lone-2il` | open | P3 | epic | 9 |
 | `lone-336` | closed | P1 | beads, docs, molecule | 2 |
-| `lone-a6i` | open | P3 | epic | 3 |
+| `lone-a6i` | open | P3 | epic | 4 |
 | `lone-ba1` | open | P2 | epic | 1 |
 | `lone-kaz` | open | P3 | epic | 5 |
 | `lone-pjd` | open | P3 | epic | 8 |
@@ -73,6 +73,7 @@ Spec: `docs/ROADMAP.md`
 Child issues:
 
 - `lone-a6i.1` [open] bug: beads-sync worktree missing bd-repair recovery path
+- `lone-a6i.2` [open] bug: Stale git index.lock blocks commit in main worktree
 - `lone-sam` [open] bug: bd doctor false-positive dirty tree with external BEADS_DIR
 - `lone-xfu` [open] bug: Worktree shows different issue set when direnv/BEADS_DIR not loaded
 
