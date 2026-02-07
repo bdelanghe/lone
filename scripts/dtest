@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+IMAGE="semantic-test"
+WORKDIR="/workspace"
+
+docker run --rm \
+  -v "$(pwd):${WORKDIR}" \
+  -w "${WORKDIR}" \
+  "${IMAGE}" \
+  bash -lc 'deno test -A 2>&1 | tail -n 30; exit ${PIPESTATUS[0]}'

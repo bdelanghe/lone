@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+IMAGE="semantic-test"
+WORKDIR="/workspace"
+
+docker run --rm \
+  -v "$(pwd):${WORKDIR}" \
+  -w "${WORKDIR}" \
+  "${IMAGE}" \
+  deno task ci

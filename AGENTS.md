@@ -37,12 +37,36 @@ fix the developer experience for all future agents.
 
 ## Running Tests
 
-To run tests when deno is not in your PATH:
+This project uses direnv + docker wrappers for consistent test execution.
+
+### Quick Commands
 
 ```bash
-# Build the test container (first time only)
-docker build -t semantic-test -f .devcontainer/Dockerfile .
+dtest          # Run all tests (shows last 30 lines)
+dci            # Run full CI pipeline (fmt, lint, check, test)
+dsh            # Drop into container shell for debugging
+dsh "deno fmt" # Run arbitrary deno command in container
+```
 
+These wrapper scripts are in `scripts/` and work for both humans and agents.
+
+### First-Time Setup
+
+Build the test container once:
+
+```bash
+docker build -t semantic-test -f .devcontainer/Dockerfile .
+```
+
+If you use direnv interactively, allow the .envrc:
+
+```bash
+direnv allow
+```
+
+### Manual Docker Commands (if needed)
+
+```bash
 # Run all tests
 docker run --rm -v "$(pwd):/workspace" -w /workspace semantic-test deno test -A
 
@@ -52,6 +76,12 @@ docker run --rm -v "$(pwd):/workspace" -w /workspace semantic-test deno test tes
 # Run with watch mode (for development)
 docker run --rm -v "$(pwd):/workspace" -w /workspace semantic-test deno test -A --watch
 ```
+
+### Security Note
+
+The .envrc wrappers run docker from the host. For agents, running inside the
+container (via devcontainer) is the cleaner trust model - then you can just
+run `deno test -A` directly without docker.
 
 ## Landing the Plane (Session Completion)
 
