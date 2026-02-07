@@ -65,6 +65,9 @@ deno task ci
 ```
 
 Optional via Deno task:
+`bdui` serves the UI at `http://127.0.0.1:3000`.
+
+## Pre-PR quick checks
 
 ```bash
 deno task test:docker
