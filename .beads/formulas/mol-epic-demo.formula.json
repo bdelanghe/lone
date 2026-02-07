@@ -1,0 +1,32 @@
+{
+  "formula": "mol-epic-demo",
+  "description": "Demo formula for epic-style planning",
+  "variables": {
+    "feature": {
+      "description": "Feature name",
+      "required": true
+    }
+  },
+  "steps": [
+    {
+      "id": "design",
+      "title": "Design {{feature}}",
+      "type": "task",
+      "priority": 2
+    },
+    {
+      "id": "implement",
+      "title": "Implement {{feature}}",
+      "type": "feature",
+      "priority": 1,
+      "depends_on": ["design"]
+    },
+    {
+      "id": "tests",
+      "title": "Test {{feature}}",
+      "type": "task",
+      "priority": 2,
+      "depends_on": ["implement"]
+    }
+  ]
+}

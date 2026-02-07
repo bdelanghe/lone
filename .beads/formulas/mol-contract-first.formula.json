@@ -1,0 +1,35 @@
+{
+  "formula": "mol-contract-first",
+  "description": "Contracts-first workflow where implementation is blocked by contract issue",
+  "variables": {
+    "component": {
+      "description": "Area being implemented",
+      "required": true
+    }
+  },
+  "steps": [
+    {
+      "id": "contracts",
+      "title": "Define contracts for {{component}}",
+      "type": "task",
+      "priority": 1,
+      "labels": ["contracts", "contract-gate"]
+    },
+    {
+      "id": "impl",
+      "title": "Implement {{component}}",
+      "type": "feature",
+      "priority": 2,
+      "labels": ["depends-on-contracts"],
+      "depends_on": ["contracts"]
+    },
+    {
+      "id": "runner",
+      "title": "Create validator runner for {{component}}",
+      "type": "feature",
+      "priority": 2,
+      "labels": ["depends-on-contracts"],
+      "depends_on": ["contracts", "impl"]
+    }
+  ]
+}

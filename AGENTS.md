@@ -13,6 +13,290 @@ bd close <id>         # Complete work
 bd sync               # Sync with git
 ```
 
+## Claim Before Work
+
+Always claim an issue before starting implementation work.
+Always assign issues to yourself when you start work (`--claim` does this atomically).
+
+```bash
+# Find ready work (no blockers, not already claimed)
+bd ready --json
+
+# Atomically claim an issue from the ready queue (sets assignee=self, status=in_progress)
+bd update <id> --claim --json               # Fails if already claimed
+
+# Find stale issues (not updated recently)
+bd stale --days 30 --json                    # Default: 30 days
+bd stale --days 90 --status in_progress --json  # Find abandoned claims
+bd stale --limit 20 --json                   # Limit results
+```
+
+## List Filters
+
+Use list filters to triage by ownership, severity, and scope.
+
+```bash
+# Filter by status, priority, type
+bd list --status open --priority 1 --json
+bd list --assignee <your-assignee-id> --json
+bd list --type bug --json
+bd list --id bd-123,bd-456 --json
+bd list --spec "docs/specs/" --json
+```
+
+## Issue Lifecycle
+
+- `open`: ready to be worked on
+- `in_progress`: actively being worked on
+- `blocked`: waiting on dependencies
+- `deferred`: intentionally postponed
+- `closed`: completed
+
+Special states:
+
+- `tombstone`: deleted-issue marker used for anti-resurrection sync safety
+- `pinned`: persistent issue flag (not a status), typically used for anchors/hooks and long-lived control items
+
+## Priorities
+
+- `0`: critical (security/data loss/broken builds)
+- `1`: high (major features/important bugs)
+- `2`: medium (default)
+- `3`: low (polish/optimizations)
+- `4`: backlog
+
+## Dependency Semantics
+
+Common dependency types:
+
+- `blocks`: hard execution dependency
+- `parent-child`: structural hierarchy
+- `related`: soft relationship
+- `discovered-from`: provenance link for discovered work
+
+Note: `blocks` is the primary scheduling edge for ready-queue execution.
+
+## JSON Output For Agents
+
+Use `--json` for agent-safe parsing.
+
+```bash
+bd show <id> --json
+bd ready --json
+bd create "Issue" -p 1 --json
+```
+
+## Session Workflow
+
+```bash
+# 1. Find work
+bd ready --json
+
+# 2. Claim it (assigns to self + in_progress)
+bd update <id> --claim --json
+
+# 3. Do the work
+
+# 4. Close
+bd close <id> --reason "Implemented and tested" --json
+```
+
+## Contract Specs (`spec_id`)
+
+For long-lived contracts, always attach a stable spec reference with `--spec-id`.
+Use quoted titles/descriptions in commands.
+
+```bash
+# Basic creation
+bd create "Issue title" -t bug|feature|task -p 0-4 -d "Description" --json
+
+# Contract-first creation (recommended for long-lived work)
+bd create "Implement auth" -t feature -p 1 --spec-id "docs/specs/auth.md" --json
+
+# Create with explicit ID (parallel workers)
+bd create "Issue title" --id worker1-100 -p 1 --json
+
+# Labels
+bd create "Issue title" -t bug -p 1 --labels bug,critical --json
+
+# Description from file/stdin
+bd create "Issue title" --body-file description.md -p 1 --json
+echo "Description text" | bd create "Issue title" --body-file - --json
+
+# Parent/child hierarchy
+bd create "Auth System" -t epic -p 1 --json
+bd create "Login UI" -p 1 --parent <epic-id> --json
+
+# Discovered work linkage
+bd create "Found bug" -t bug -p 1 --deps discovered-from:<parent-id> --json
+
+# External references
+bd create "Fix login" -t bug -p 1 --external-ref "gh-123" --json
+```
+
+## Issue State
+
+Use state dimensions for long-lived operational context (for example: patrol, mode, health).
+
+Common dimensions:
+
+- `patrol`: `active`, `muted`, `suspended`
+- `mode`: `normal`, `degraded`, `maintenance`
+- `health`: `healthy`, `warning`, `failing`
+- `status`: `idle`, `working`, `blocked`
+
+What `set-state` does:
+
+1. Creates an event bead with reason (source of truth)
+2. Removes old `<dimension>:*` label if one exists
+3. Adds new `<dimension>:<value>` label (cache)
+
+```bash
+# Query current state value
+bd state <id> <dimension>                    # Output: value
+bd state witness-abc patrol                  # Output: active
+bd state --json witness-abc patrol           # {"issue_id":"...","dimension":"patrol","value":"active"}
+
+# List all state dimensions on an issue
+bd state list <id> --json
+bd state list witness-abc                    # patrol: active, mode: normal, health: healthy
+
+# Set state (creates event + updates label atomically)
+bd set-state <id> <dimension>=<value> --reason "explanation" --json
+bd set-state witness-abc patrol=muted --reason "Investigating stuck polecat"
+bd set-state witness-abc mode=degraded --reason "High error rate"
+```
+
+## Maintenance & Cleanup
+
+Run destructive cleanup commands with `--dry-run` first.
+
+```bash
+# Clean up closed issues (bulk deletion)
+bd admin cleanup --dry-run --json
+bd admin cleanup --force --json
+bd admin cleanup --older-than 30 --force --json
+bd admin cleanup --older-than 90 --cascade --force --json
+
+# Optional hard-delete mode (bypasses tombstone TTL safety)
+bd admin cleanup --older-than 90 --hard --force --json
+```
+
+## Orphans & Duplicates
+
+```bash
+# Scan current repo for orphaned issues (referenced in commits but still open)
+bd orphans
+bd orphans --json
+bd orphans --details
+
+# Cross-repo scan against an external beads DB
+bd --db ~/my-beads-repo/.beads/beads.db orphans --json
+
+# Find and merge duplicate groups
+bd duplicates
+bd duplicates --dry-run
+bd duplicates --auto-merge
+
+# Mark a specific issue as duplicate of canonical
+bd duplicate <source-id> --of <target-id> --json
+```
+
+`bd merge` is a git merge-driver for JSONL conflicts, not duplicate consolidation.
+
+## Compaction & Restore
+
+```bash
+# Agent-driven compaction
+bd admin compact --analyze --json
+bd admin compact --analyze --tier 1 --limit 10 --json
+bd admin compact --apply --id bd-42 --summary summary.txt
+bd admin compact --apply --id bd-42 --summary - < summary.txt
+bd admin compact --stats --json
+
+# Legacy AI-powered compaction (requires ANTHROPIC_API_KEY)
+bd admin compact --auto --dry-run --all
+bd admin compact --auto --all --tier 1
+
+# Restore compacted issue from git history
+bd restore <id> --json
+```
+
+## Molecular Chemistry
+
+Beads uses a chemistry metaphor for template-based workflows.
+
+Phase transitions:
+
+- Solid: Proto (`bd formula list`)
+- Liquid: Mol (`bd mol pour`)
+- Vapor: Wisp (`bd mol wisp`, ephemeral and not exported to JSONL)
+
+```bash
+# List available formulas/templates
+bd formula list --json
+
+# Show molecule/proto structure
+bd mol show <molecule-or-proto-id> --json
+
+# Extract proto from ad-hoc epic
+bd mol distill <epic-id> --json
+
+# Pour: instantiate proto as persistent mol
+bd mol pour <proto-id> --var key=value --json
+bd mol pour <proto-id> --var key=value --dry-run
+bd mol pour <proto-id> --var key=value --assignee <your-assignee-id> --json
+bd mol pour <proto-id> --attach <other-proto> --json
+
+# Wisp: instantiate proto as ephemeral molecule
+bd mol wisp <proto-id> --var key=value --json
+bd mol wisp list --json
+bd mol wisp list --all --json
+bd mol wisp gc --json
+bd mol wisp gc --age 24h --json
+bd mol wisp gc --dry-run
+
+# Bonding: combine proto/mol workflows
+bd mol bond <A> <B> --json
+bd mol bond <A> <B> --type sequential --json
+bd mol bond <A> <B> --type parallel --json
+bd mol bond <A> <B> --type conditional --json
+bd mol bond <proto> <mol> --pour --json
+bd mol bond <proto> <mol> --ephemeral --json
+bd mol bond <proto> <mol> --ref arm-{{name}} --var name=ace --json
+bd mol bond <A> <B> --dry-run
+
+# Squash: compress wisp execution to digest
+bd mol squash <ephemeral-id> --json
+bd mol squash <ephemeral-id> --summary "Work completed" --json
+bd mol squash <ephemeral-id> --dry-run
+bd mol squash <ephemeral-id> --keep-children --json
+
+# Burn: delete wisp without digest (destructive)
+bd mol burn <ephemeral-id> --json
+bd mol burn <ephemeral-id> --dry-run
+bd mol burn <ephemeral-id> --force --json
+```
+
+Note: some `bd mol` write operations may need `--no-daemon` in direct DB mode.
+
+## Sync Branch Workflow
+
+Check current sync mode first:
+
+```bash
+bd sync --status
+```
+
+Sync branch setup and migration:
+
+```bash
+bd migrate sync beads-sync
+bd migrate sync beads-sync --dry-run
+bd migrate sync beads-sync --force
+bd migrate sync beads-sync --orphan
+```
+
 ## Companion Tools
 
 Use these in addition to `bd` when useful:
