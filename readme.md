@@ -1,57 +1,99 @@
-# Beads Worktree Policy
+# Lone - Semantic Page Elements
 
-Reference:
-https://github.com/steveyegge/beads/blob/main/docs/WORKTREES.md#fully-separate-beads-repository
+Lone builds real web pages from semantic parts using typed custom HTML
+elements.
 
-## Canonical model
+The goal is simple: compose pages with custom elements while preserving the
+meaningful structure that assistive technology relies on.
 
-- `beads.db` is local cache/state and must not be committed to code branches or PRs.
-- `.beads/issues.jsonl` is the portable ledger and should sync through the dedicated sync branch (for this repo: `beads-sync`).
-- Keep normal code branches clean from runtime Beads artifacts (`*.db`, `*.db-wal`, `*.db-shm`, `*.db-journal`, locks, pid files).
-- `BEADS_NO_DAEMON=1` is the default in worktree shells to avoid daemon branch confusion.
+## What Lone Is
 
-## What can be reviewed in PRs
+- A small library of custom elements (Web Components) that wrap native HTML.
+- A contract + validator layer that checks page structure.
+- A TDD-first workflow: contracts first, implementation second.
 
-- Allowed when intentional: `.beads/config.yaml`, `.beads/README.md`.
-- Not allowed: `.beads/*.db*` and other runtime files.
+Lone is not a design system and not a CSS framework. It is a semantic
+construction kit.
 
-## Worktree behavior
+## Core Idea
 
-- Preferred: one repo-level Beads state shared across worktrees.
-- Cross-machine transport is via Git sync branch + JSONL, not SQLite database files.
-- Use isolated per-worktree `BEADS_DIR` only when you explicitly want separate issue universes.
+Custom elements can control composition, but they must not destroy semantics.
 
-## Optional UI Tooling
+Rule of thumb:
 
-This project can also be used with companion Beads tools:
+- Prefer native elements inside (`button`, `a`, `input`, `nav`, `main`, etc.).
+- Custom elements act as typed wrappers + validators, not reimplementations of
+  controls.
 
-- `bdui` (from `beads-ui`): browser UI for Beads
-- `bv` (from `beads_viewer`): terminal UI and robot triage commands
-- `vscode-beads` (VS Code extension): available via Visual Studio Marketplace
+## Contracts (Project Spine)
 
-### Install
+Lone treats page structure as data first:
 
-```bash
-brew install dicklesworthstone/tap/bv
-npm install -g beads-ui --prefix "$HOME/.npm-global"
-echo 'export PATH="$HOME/.npm-global/bin:$PATH"' >> ~/.zshrc
-source ~/.zshrc
+- `SemanticNode`: a portable tree of named semantic parts.
+- `Finding`: validator output with stable `code`, `path`, and `message`.
+- `ValidatorSpec`: explicit validator contract and metadata.
+
+Everything starts as:
+
+1. Contract (`zod` schema)
+2. Failing test
+3. Minimal implementation
+
+## Repository Layout
+
+```text
+src/contracts/   # Zod contracts (source of truth)
+src/validate/    # semantic invariants and validators
+src/elements/    # custom element layer (thin/early)
+src/adapters/    # AX/CDP and other tree adapters
+tests/           # contract + validator + adapter tests
 ```
 
-### Usage
+## Development
+
+Lone development runs in a pinned container setup. Primary flow:
+
+1. Build the test image once.
+2. Run tests via `./scripts/test`.
+3. Keep changes contract-first and TDD-first.
+4. Run quality gates before commit.
 
 ```bash
-bdui start --open
-bv --robot-triage
+docker build -t semantic-test -f .devcontainer/Dockerfile .
+./scripts/test
+deno task ci
 ```
 
-## Pre-PR quick checks
+Optional via Deno task:
 
 ```bash
-# Should return nothing:
-git diff --name-only origin/main...HEAD | rg '^\.beads/.*\.db'
-git diff --name-only origin/main...HEAD | rg '^\.beads/.*\.(db-wal|db-shm|db-journal)$'
-
-# Sync branch should be configured:
-bd config get sync.branch
+deno task test:docker
 ```
+
+Container cache directories are mounted through `.xdg/` for repeatable and fast
+local runs.
+
+## Plan (Near Term)
+
+1. Tighten core contracts and edge-case tests for `SemanticNode`,
+`ElementSpec`, `Finding`, and `ValidatorSpec`.
+2. Complete adapter parity: finish CDP coverage and add Puppeteer +
+Playwright semantic-node adapters.
+3. Build a first custom-elements semantic page example (MDN "good semantics"
+style) and validate it end-to-end with Lone validators.
+4. Implement the first typed custom element wrappers in `src/elements/`
+using the existing contracts as the source of truth.
+5. Decide long-term node typing strategy (standard DOM types vs custom
+`ElementSpec`) and document the decision.
+
+## Status
+
+Early. Current milestone is a stable contract set and validator suite that can
+support the first real custom-element page builds.
+
+## Beads / Worktrees
+
+Beads policy and worktree sync rules:
+
+- `docs/BEADS_WORKTREE_POLICY.md`
+- `AGENTS.md`
