@@ -21,6 +21,30 @@ https://github.com/steveyegge/beads/blob/main/docs/WORKTREES.md#fully-separate-b
 - Cross-machine transport is via Git sync branch + JSONL, not SQLite database files.
 - Use isolated per-worktree `BEADS_DIR` only when you explicitly want separate issue universes.
 
+## Optional UI Tooling
+
+This project can also be used with companion Beads tools:
+
+- `bdui` (from `beads-ui`): browser UI for Beads
+- `bv` (from `beads_viewer`): terminal UI and robot triage commands
+- `vscode-beads` (VS Code extension): available via Visual Studio Marketplace
+
+### Install
+
+```bash
+brew install dicklesworthstone/tap/bv
+npm install -g beads-ui --prefix "$HOME/.npm-global"
+echo 'export PATH="$HOME/.npm-global/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+### Usage
+
+```bash
+bdui start --open
+bv --robot-triage
+```
+
 ## Pre-PR quick checks
 
 ```bash

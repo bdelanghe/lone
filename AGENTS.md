@@ -13,6 +13,39 @@ bd close <id>         # Complete work
 bd sync               # Sync with git
 ```
 
+## Companion Tools
+
+Use these in addition to `bd` when useful:
+
+```bash
+bdui start --open     # Browser UI for issues/board/epics
+bv --robot-triage     # Structured next-work recommendations for agents
+```
+
+Install notes:
+
+```bash
+brew install dicklesworthstone/tap/bv
+npm install -g beads-ui --prefix "$HOME/.npm-global"
+echo 'export PATH="$HOME/.npm-global/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+## Beads Docs
+
+Before DB/sync/worktree changes, check:
+
+- TROUBLESHOOTING.md
+- WORKTREES.md
+- ARCHITECTURE.md
+- CLI_REFERENCE.md
+- FAQ.md
+
+Local quick note:
+
+- `docs/BEADS_ARCHITECTURE_NOTES.md`
+- `docs/BEADS_CLI_QUICK_NOTES.md`
+
 ## Beads Recovery
 
 If `bd` fails with SQLite schema/version errors (for example, `no such column:
