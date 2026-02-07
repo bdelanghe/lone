@@ -1,13 +1,15 @@
 {
+  "name": "semantic-page-elements",
+  "version": "0.0.1",
   "imports": {
-    "zod": "jsr:@std/assert@^0.218.0/zod"
+    "zod": "npm:zod@3"
   },
   "tasks": {
-    "test": "deno test --allow-read --allow-env",
-    "test:watch": "deno test --allow-read --allow-env --watch",
+    "test": "deno test -A --fail-fast",
+    "test:watch": "deno test -A --watch",
     "fmt": "deno fmt",
     "lint": "deno lint",
     "check": "deno check **/*.ts",
-    "ci": "deno fmt --check && deno lint && deno check **/*.ts && deno test --allow-read --allow-env"
+    "ci": "deno fmt --check && deno lint && deno check **/*.ts && deno test -A --fail-fast"
   }
 }
