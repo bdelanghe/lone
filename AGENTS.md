@@ -45,6 +45,7 @@ Local quick note:
 
 - `docs/BEADS_ARCHITECTURE_NOTES.md`
 - `docs/BEADS_CLI_QUICK_NOTES.md`
+- `docs/MOLECULES.md`
 
 ## Beads Recovery
 
