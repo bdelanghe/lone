@@ -29,7 +29,7 @@ json: true
 # actor: ""
 
 # Path to database (overridden by BEADS_DB or --db)
-db: "/Users/bobby/.local/state/git/worktrees/io.github/bdelanghe/lone/main/.beads/beads.db"
+# db: ""
 
 # Auto-start daemon if not running (can also use BEADS_AUTO_START_DAEMON)
 auto-start-daemon: false
