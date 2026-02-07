@@ -1,0 +1,321 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  cat <<'USAGE'
+Usage:
+  worktree-new <task summary|slug> [options]
+
+Creates (or reuses) a task worktree under the shared worktree root and then
+runs a Beads health check in that worktree.
+
+Options:
+  --base <ref>         Base ref for new branches (default: origin/main)
+  --prefix <prefix>    Branch prefix (default: codex)
+  --root <path>        Worktree root directory (default: parent of shared "main")
+  --allow-dirty        Skip clean-check for the shared "main" worktree
+  --skip-fetch         Skip `git fetch origin`
+  --skip-bd            Skip Beads health checks
+  --repair-on-fail     Attempt Beads recovery commands if health checks fail
+  --sync-branch <name> Ensure bd sync branch is configured (default: beads-sync)
+  --skip-bd-config     Skip applying bd config defaults
+  --dry-run            Print planned actions without making changes
+  -h, --help           Show this help text
+
+Examples:
+  worktree-new "improve accessibility docs"
+  worktree-new smoke-healthcheck --base origin/main
+  worktree-new "beads db fix" --root /Users/bobby/.local/state/git/worktrees/io.github/bdelanghe/lone
+USAGE
+}
+
+log() {
+  printf '[worktree-new] %s\n' "$*"
+}
+
+error() {
+  printf '[worktree-new] ERROR: %s\n' "$*" >&2
+}
+
+require_cmd() {
+  local cmd="$1"
+  if ! command -v "$cmd" >/dev/null 2>&1; then
+    error "Required command not found: $cmd"
+    exit 1
+  fi
+}
+
+slugify() {
+  local raw="$*"
+  printf '%s' "$raw" \
+    | tr '[:upper:]' '[:lower:]' \
+    | sed -E 's/[^a-z0-9]+/-/g; s/^-+//; s/-+$//; s/-{2,}/-/g'
+}
+
+setup_beads_env() {
+  local main_worktree="$1"
+
+  export BEADS_NO_DAEMON="${BEADS_NO_DAEMON:-1}"
+
+  if [ -n "${BEADS_DIR:-}" ]; then
+    log "Using BEADS_DIR from environment: $BEADS_DIR"
+    return 0
+  fi
+
+  if [ -d "$main_worktree/.beads" ]; then
+    BEADS_DIR="$main_worktree/.beads"
+    export BEADS_DIR
+    log "Using shared BEADS_DIR from main worktree: $BEADS_DIR"
+  fi
+}
+
+run_bd_checks() {
+  local worktree_path="$1"
+  local doctor_output=""
+
+  log "Running Beads health checks in $worktree_path"
+  if [ ! -e "$worktree_path/.beads" ] && [ -z "${BEADS_DIR:-}" ]; then
+    error "No .beads found in worktree and BEADS_DIR is unset"
+    return 1
+  fi
+
+  (cd "$worktree_path" && bd where)
+  (cd "$worktree_path" && bd worktree info)
+  doctor_output="$(cd "$worktree_path" && bd doctor)"
+  printf '%s\n' "$doctor_output"
+  if printf '%s\n' "$doctor_output" | grep -Eq '✖[[:space:]]+[1-9][0-9]* failed'; then
+    error "bd doctor reported failing checks"
+    return 1
+  fi
+  (cd "$worktree_path" && bd ready --json >/dev/null)
+}
+
+attempt_bd_repair() {
+  local worktree_path="$1"
+
+  log "Attempting Beads recovery sequence"
+  (cd "$worktree_path" && bd doctor --fix --source=jsonl --yes || true)
+  (cd "$worktree_path" && bd doctor --fix --force --source=jsonl --yes || true)
+  (cd "$worktree_path" && bd migrate --update-repo-id || true)
+  (cd "$worktree_path" && bd repair --dry-run || true)
+  (cd "$worktree_path" && bd repair || true)
+
+  if [ -x "$worktree_path/scripts/bd-repair" ]; then
+    (cd "$worktree_path" && ./scripts/bd-repair || true)
+  fi
+}
+
+ensure_bd_config() {
+  local worktree_path="$1"
+  local sync_branch="$2"
+
+  log "Ensuring Beads defaults in $worktree_path"
+  (cd "$worktree_path" && bd config set no-daemon true >/dev/null)
+  (cd "$worktree_path" && bd config set auto-start-daemon false >/dev/null)
+  if [ -n "$sync_branch" ]; then
+    (cd "$worktree_path" && bd config set sync.branch "$sync_branch" >/dev/null)
+  fi
+}
+
+find_worktree_for_branch() {
+  local repo="$1"
+  local branch="$2"
+
+  git -C "$repo" worktree list --porcelain | awk -v b="refs/heads/$branch" '
+    $1 == "worktree" { wt = $2 }
+    $1 == "branch" && $2 == b { print wt; exit }
+  '
+}
+
+main() {
+  local base="origin/main"
+  local prefix="codex"
+  local root=""
+  local allow_dirty=0
+  local skip_fetch=0
+  local skip_bd=0
+  local repair_on_fail=0
+  local sync_branch="beads-sync"
+  local skip_bd_config=0
+  local dry_run=0
+
+  local -a task_parts=()
+
+  while [ "$#" -gt 0 ]; do
+    case "$1" in
+      --base)
+        base="${2:-}"
+        shift 2
+        ;;
+      --prefix)
+        prefix="${2:-}"
+        shift 2
+        ;;
+      --root)
+        root="${2:-}"
+        shift 2
+        ;;
+      --allow-dirty)
+        allow_dirty=1
+        shift
+        ;;
+      --skip-fetch)
+        skip_fetch=1
+        shift
+        ;;
+      --skip-bd)
+        skip_bd=1
+        shift
+        ;;
+      --repair-on-fail)
+        repair_on_fail=1
+        shift
+        ;;
+      --sync-branch)
+        sync_branch="${2:-}"
+        shift 2
+        ;;
+      --skip-bd-config)
+        skip_bd_config=1
+        shift
+        ;;
+      --dry-run)
+        dry_run=1
+        shift
+        ;;
+      -h|--help)
+        usage
+        exit 0
+        ;;
+      --)
+        shift
+        while [ "$#" -gt 0 ]; do
+          task_parts+=("$1")
+          shift
+        done
+        ;;
+      *)
+        task_parts+=("$1")
+        shift
+        ;;
+    esac
+  done
+
+  if [ "${#task_parts[@]}" -eq 0 ]; then
+    usage
+    exit 1
+  fi
+
+  require_cmd git
+
+  local task_slug
+  task_slug="$(slugify "${task_parts[*]}")"
+  if [ -z "$task_slug" ]; then
+    error "Task slug is empty after normalization"
+    exit 1
+  fi
+
+  local branch="$prefix/$task_slug"
+
+  local repo_root
+  repo_root="$(git rev-parse --show-toplevel)"
+
+  local main_worktree
+  main_worktree="$(find_worktree_for_branch "$repo_root" "main")"
+  if [ -z "$main_worktree" ]; then
+    main_worktree="$repo_root"
+  fi
+  setup_beads_env "$main_worktree"
+
+  if [ -z "$root" ]; then
+    root="$(dirname "$main_worktree")"
+  fi
+  mkdir -p "$root"
+  root="$(cd "$root" && pwd)"
+
+  local target="$root/$branch"
+
+  log "Task slug: $task_slug"
+  log "Branch: $branch"
+  log "Shared main worktree: $main_worktree"
+  log "Target worktree: $target"
+
+  if [ "$allow_dirty" -ne 1 ]; then
+    if [ -n "$(git -C "$main_worktree" status --porcelain)" ]; then
+      error "Shared main worktree is dirty: $main_worktree"
+      error "Commit/stash first, or rerun with --allow-dirty"
+      exit 1
+    fi
+  fi
+
+  if [ "$skip_fetch" -ne 1 ]; then
+    if [ "$dry_run" -eq 1 ]; then
+      log "[dry-run] git -C '$main_worktree' fetch origin"
+    else
+      git -C "$main_worktree" fetch origin
+    fi
+  fi
+
+  local existing_worktree
+  existing_worktree="$(find_worktree_for_branch "$main_worktree" "$branch")"
+
+  if [ -n "$existing_worktree" ]; then
+    target="$existing_worktree"
+    log "Branch already has a worktree: $target"
+  else
+    local branch_exists=0
+    if git -C "$main_worktree" show-ref --verify --quiet "refs/heads/$branch"; then
+      branch_exists=1
+    fi
+
+    if [ -e "$target" ]; then
+      error "Target path already exists and is not registered for branch '$branch': $target"
+      error "Move/remove it first or use a different task slug"
+      exit 1
+    fi
+
+    mkdir -p "$(dirname "$target")"
+
+    if [ "$branch_exists" -eq 1 ]; then
+      if [ "$dry_run" -eq 1 ]; then
+        log "[dry-run] git -C '$main_worktree' worktree add '$target' '$branch'"
+      else
+        git -C "$main_worktree" worktree add "$target" "$branch"
+      fi
+    else
+      if [ "$dry_run" -eq 1 ]; then
+        log "[dry-run] git -C '$main_worktree' worktree add '$target' -b '$branch' '$base'"
+      else
+        git -C "$main_worktree" worktree add "$target" -b "$branch" "$base"
+      fi
+    fi
+  fi
+
+  if [ "$dry_run" -eq 1 ]; then
+    log "Dry run complete"
+    exit 0
+  fi
+
+  if [ "$skip_bd" -ne 1 ]; then
+    require_cmd bd
+    if [ "$skip_bd_config" -ne 1 ]; then
+      ensure_bd_config "$target" "$sync_branch"
+    fi
+
+    if ! run_bd_checks "$target"; then
+      error "Beads health check failed"
+      if [ "$repair_on_fail" -eq 1 ]; then
+        attempt_bd_repair "$target"
+        run_bd_checks "$target"
+      else
+        error "Rerun with --repair-on-fail to attempt automated recovery"
+        exit 1
+      fi
+    fi
+  fi
+
+  log "Ready"
+  printf 'cd "%s"\n' "$target"
+}
+
+main "$@"

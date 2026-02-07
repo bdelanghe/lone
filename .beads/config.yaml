@@ -14,7 +14,7 @@
 # no-db: false
 
 # Disable daemon for RPC communication (forces direct database access)
-# no-daemon: false
+no-daemon: true
 
 # Disable auto-flush of database to JSONL after mutations
 # no-auto-flush: false
@@ -23,19 +23,19 @@
 # no-auto-import: false
 
 # Enable JSON output by default
-# json: false
+json: true
 
 # Default actor for audit trails (overridden by BD_ACTOR or --actor)
 # actor: ""
 
 # Path to database (overridden by BEADS_DB or --db)
-# db: ""
+db: "/Users/bobby/.local/state/git/worktrees/io.github/bdelanghe/lone/main/.beads/beads.db"
 
 # Auto-start daemon if not running (can also use BEADS_AUTO_START_DAEMON)
-# auto-start-daemon: true
+auto-start-daemon: false
 
 # Debounce interval for auto-flush (can also use BEADS_FLUSH_DEBOUNCE)
-# flush-debounce: "5s"
+flush-debounce: 15s
 
 # Export events (audit trail) to .beads/events.jsonl on each flush/sync
 # When enabled, new events are appended incrementally using a high-water mark.
@@ -69,3 +69,9 @@ sync-branch: "beads-sync"
 daemon.auto-commit: false
 
 daemon.auto-push: false
+
+create.require-description: true
+
+validation.on-create: "error"
+
+validation.on-sync: "error"

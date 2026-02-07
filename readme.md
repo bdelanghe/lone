@@ -100,3 +100,15 @@ Beads policy and worktree sync rules:
 
 - `docs/BEADS_WORKTREE_POLICY.md`
 - `AGENTS.md`
+
+Quick setup command for task worktrees with Beads health checks:
+
+```bash
+worktree-new "short task summary"
+# or:
+./scripts/worktree-new "short task summary"
+```
+
+This helper also enforces Beads defaults for linked worktrees
+(`no-daemon=true`, `auto-start-daemon=false`, `sync.branch=beads-sync`) and
+runs `bd` health checks.
