@@ -1,0 +1,13 @@
+{
+  "imports": {
+    "zod": "jsr:@std/assert@^0.218.0/zod"
+  },
+  "tasks": {
+    "test": "deno test --allow-read --allow-env",
+    "test:watch": "deno test --allow-read --allow-env --watch",
+    "fmt": "deno fmt",
+    "lint": "deno lint",
+    "check": "deno check **/*.ts",
+    "ci": "deno fmt --check && deno lint && deno check **/*.ts && deno test --allow-read --allow-env"
+  }
+}
