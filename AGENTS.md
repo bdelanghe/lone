@@ -26,6 +26,24 @@ bd doctor
 This repairs common legacy DB mismatches in-place so `bd ready` and `bd create`
 work again.
 
+Before changing beads state, consult the upstream docs first:
+
+- `docs/BEADS_RECOVERY_RUNBOOK.md` (project runbook)
+- Troubleshooting/FAQ in the beads docs (daemon, worktrees, corruption, doctor)
+
+Preferred recovery order (least destructive first):
+
+```bash
+bd doctor --fix --source=jsonl --yes
+bd doctor --fix --force --source=jsonl --yes
+bd migrate --update-repo-id
+bd repair --dry-run
+bd repair
+```
+
+Only after collecting evidence and backing up DB files should you do stronger
+actions (rebuild/move DB files).
+
 ## Agent Confusion = Development Issue
 
 **CRITICAL:** When you (as an agent) get confused, encounter unclear tooling,
