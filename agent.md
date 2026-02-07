@@ -45,18 +45,20 @@ works before proceeding with remaining issues.
 - ✅ lone-6mt: Test validation (28/28 tests pass)
 - ✅ lone-c7f: CI pipeline + pre-commit hooks
 
-### Created for Future Work (3):
+### Created for Future Work (4):
 
 - 📋 lone-wmj (P2): Research DOM types module vs custom ElementSpec
 - 📋 lone-3nn (P2): Contract review - tighten specs, add more tests
+- 📋 lone-4e9 (P2): Example - recreate MDN good-semantics.html with our elements
 - 📋 lone-8d9 (P3): Fix .beads/metadata.json formatting warning
 
-### Ready to Work (6):
+### Ready to Work (7):
 
 - 📋 lone-yjd: CDP AXNode adapter (P2)
 - 📋 lone-cyc: Puppeteer SerializedAXNode adapter (P2)
 - 📋 lone-wmj: DOM types research (P2)
 - 📋 lone-3nn: Contract improvements (P2)
+- 📋 lone-4e9: MDN example recreation (P2)
 - 📋 lone-ni6: Playwright adapter (P3)
 - 📋 lone-8d9: Fix formatting warnings (P3)
 
@@ -69,7 +71,7 @@ works before proceeding with remaining issues.
 ## Session Close - 2026-02-07
 
 **Final State**:
-- 11 issues completed, 6 ready for next session
+- 11 issues completed, 7 ready for next session
 - 28/28 tests passing
 - CI pipeline active (fmt, lint, check, test)
 - Pre-commit hooks preventing broken commits
@@ -87,4 +89,5 @@ works before proceeding with remaining issues.
 **Next Session Priorities**:
 1. Contract improvements (lone-3nn) - tighter validation, more tests
 2. DOM types research (lone-wmj) - evaluate standard types vs custom
-3. Adapter implementations (CDP, Puppeteer, Playwright)
+3. MDN example (lone-4e9) - validate contracts with real semantic HTML
+4. Adapter implementations (CDP, Puppeteer, Playwright)
