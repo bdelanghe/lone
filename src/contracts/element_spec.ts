@@ -1,17 +1,19 @@
 import { z } from "zod";
 
-export const ElementSpec: z.ZodType<ElementSpecType> = z.lazy(() =>
-  z.object({
-    tag: z.string().min(1),
-    attrs: z.record(z.string()).default({}),
-    text: z.string().optional(),
-    children: z.array(ElementSpec).default([]),
-  })
-);
+const baseSchema = z.object({
+  tag: z.string().min(1),
+  attrs: z.record(z.string()).optional().default({}),
+  text: z.string().optional(),
+});
 
-export type ElementSpecType = {
-  tag: string;
-  attrs: Record<string, string>;
-  text?: string;
+type ElementSpecBase = z.infer<typeof baseSchema>;
+
+export type ElementSpecType = ElementSpecBase & {
   children: ElementSpecType[];
 };
+
+export const ElementSpec: z.ZodType<ElementSpecType> = z.lazy(() =>
+  baseSchema.extend({
+    children: z.array(ElementSpec).optional().default([]),
+  })
+) as z.ZodType<ElementSpecType>;

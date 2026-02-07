@@ -1,19 +1,20 @@
 import { z } from "zod";
 
-export const SemanticNode: z.ZodType<SemanticNodeType> = z.lazy(() =>
-  z.object({
-    type: z.string().min(1),
-    name: z.string().optional(),
-    role: z.string().optional(),
-    props: z.record(z.unknown()).default({}),
-    children: z.array(SemanticNode).default([]),
-  })
-);
+const baseSchema = z.object({
+  type: z.string().min(1),
+  name: z.string().optional(),
+  role: z.string().optional(),
+  props: z.record(z.unknown()).optional().default({}),
+});
 
-export type SemanticNodeType = {
-  type: string;
-  name?: string;
-  role?: string;
-  props: Record<string, unknown>;
+type SemanticNodeBase = z.infer<typeof baseSchema>;
+
+export type SemanticNodeType = SemanticNodeBase & {
   children: SemanticNodeType[];
 };
+
+export const SemanticNode: z.ZodType<SemanticNodeType> = z.lazy(() =>
+  baseSchema.extend({
+    children: z.array(SemanticNode).optional().default([]),
+  })
+) as z.ZodType<SemanticNodeType>;
