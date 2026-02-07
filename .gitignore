@@ -1,0 +1,5 @@
+/.xdg/
+
+# Beads runtime database artifacts must stay local-only.
+.beads/*.db
+.beads/*.db-*

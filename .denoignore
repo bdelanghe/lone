@@ -1,0 +1,12 @@
+# Project metadata and AI context
+.beads/
+.claude/
+
+# Test artifacts
+coverage/
+
+# XDG runtime directories
+.xdg/
+
+# DevContainer configuration
+.devcontainer/

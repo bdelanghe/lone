@@ -1,11 +1,19 @@
 {
-  "name": "lone",
-  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "name": "semantic-page-elements",
+  "build": { "dockerfile": "Dockerfile" },
+  "features": {},
   "customizations": {
     "vscode": {
       "extensions": [
-        "planet57.vscode-beads"
-      ]
+        "denoland.vscode-deno"
+      ],
+      "settings": {
+        "deno.enable": true,
+        "deno.lint": true,
+        "deno.unstable": false
+      }
     }
-  }
+  },
+  "postCreateCommand": "deno --version && deno task test",
+  "remoteUser": "vscode"
 }
