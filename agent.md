@@ -31,7 +31,7 @@ works before proceeding with remaining issues.
 
 ## Session Progress Summary
 
-### Completed Issues (10):
+### Completed Issues (11):
 
 - ✅ lone-bap: Repo skeleton + deno.jsonc
 - ✅ lone-u9c: Smoke test
@@ -43,13 +43,22 @@ works before proceeding with remaining issues.
 - ✅ lone-9w7: ValidatorSpec contract + tests
 - ✅ lone-a9i: Module exports (barrel files)
 - ✅ lone-6mt: Test validation (28/28 tests pass)
+- ✅ lone-c7f: CI pipeline + pre-commit hooks
 
-### Ready to Work (3):
+### Created for Future Work (3):
 
-- 📋 lone-c7f: CI pipeline + local git hooks (P2)
-- 📋 lone-cyc: Puppeteer adapter (P2)
-- 📋 lone-yjd: CDP adapter (P2)
+- 📋 lone-wmj (P2): Research DOM types module vs custom ElementSpec
+- 📋 lone-3nn (P2): Contract review - tighten specs, add more tests
+- 📋 lone-8d9 (P3): Fix .beads/metadata.json formatting warning
+
+### Ready to Work (6):
+
+- 📋 lone-yjd: CDP AXNode adapter (P2)
+- 📋 lone-cyc: Puppeteer SerializedAXNode adapter (P2)
+- 📋 lone-wmj: DOM types research (P2)
+- 📋 lone-3nn: Contract improvements (P2)
 - 📋 lone-ni6: Playwright adapter (P3)
+- 📋 lone-8d9: Fix formatting warnings (P3)
 
 ### Active Blockers:
 
@@ -57,10 +66,25 @@ works before proceeding with remaining issues.
 
 ---
 
-## Next Steps
+## Session Close - 2026-02-07
 
-Foundation is complete and validated. Remaining work:
+**Final State**:
+- 11 issues completed, 6 ready for next session
+- 28/28 tests passing
+- CI pipeline active (fmt, lint, check, test)
+- Pre-commit hooks preventing broken commits
+- Dev container deterministic (Deno 1.46.3 pinned)
+- All code formatted and committed
+- Branch: project-setup (ready to merge or continue)
 
-1. **lone-c7f** (P2): CI pipeline + local git hooks - logical next step
-2. **Adapter trio** (P2/P3): Puppeteer, CDP, Playwright adapters - can be done
-   in parallel
+**Key Decisions**:
+1. Used .optional().default() pattern for Zod recursive schemas
+2. TDD approach for all validators
+3. Simple pre-commit hook (no husky/lefthook)
+4. Added exports field to deno.jsonc to resolve warnings
+5. Created agent.md ledger pattern for decision tracking
+
+**Next Session Priorities**:
+1. Contract improvements (lone-3nn) - tighter validation, more tests
+2. DOM types research (lone-wmj) - evaluate standard types vs custom
+3. Adapter implementations (CDP, Puppeteer, Playwright)
