@@ -37,18 +37,20 @@ fix the developer experience for all future agents.
 
 ## Running Tests
 
-This project uses direnv + docker wrappers for consistent test execution.
+This project uses a single canonical test wrapper for consistent docker-based execution.
 
 ### Quick Commands
 
 ```bash
-dtest          # Run all tests (shows last 30 lines)
-dci            # Run full CI pipeline (fmt, lint, check, test)
-dsh            # Drop into container shell for debugging
-dsh "deno fmt" # Run arbitrary deno command in container
+test                  # Canonical way - run all tests in docker (shows last 30 lines)
+./scripts/test        # Explicit path (works everywhere)
+deno task test:docker # Via deno tasks (optional)
 ```
 
-These wrapper scripts are in `scripts/` and work for both humans and agents.
+**Why this works:**
+- `scripts/test` is the single source of truth for docker test invocation
+- `.envrc` adds `scripts/` to PATH (so `test` just works when direnv is active)
+- Mounts `.xdg/` directories for Deno/npm cache persistence across runs
 
 ### First-Time Setup
 
@@ -58,30 +60,33 @@ Build the test container once:
 docker build -t semantic-test -f .devcontainer/Dockerfile .
 ```
 
-If you use direnv interactively, allow the .envrc:
+If using direnv interactively:
 
 ```bash
 direnv allow
 ```
 
-### Manual Docker Commands (if needed)
+### XDG Cache Persistence
+
+The test wrapper mounts `.xdg/cache`, `.xdg/config`, and `.xdg/data` into the
+container. This persists Deno's downloaded modules and npm artifacts across runs.
+
+**Benefits:**
+- Fast: downloads cached between test runs
+- Reproducible: state is explicit and repo-local
+- Cleanable: `rm -rf .xdg` nukes all cached state
+
+The `.xdg/` directory is in `.gitignore` - it's ephemeral build state.
+
+### Later: Devcontainer Migration
+
+When agents run inside the devcontainer, you'll just use:
 
 ```bash
-# Run all tests
-docker run --rm -v "$(pwd):/workspace" -w /workspace semantic-test deno test -A
-
-# Run specific test directory
-docker run --rm -v "$(pwd):/workspace" -w /workspace semantic-test deno test tests/contracts/
-
-# Run with watch mode (for development)
-docker run --rm -v "$(pwd):/workspace" -w /workspace semantic-test deno test -A --watch
+deno test -A
 ```
 
-### Security Note
-
-The .envrc wrappers run docker from the host. For agents, running inside the
-container (via devcontainer) is the cleaner trust model - then you can just
-run `deno test -A` directly without docker.
+The `scripts/test` wrapper remains as compatibility for host-based execution.
 
 ## Landing the Plane (Session Completion)
 
