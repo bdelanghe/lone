@@ -23,9 +23,10 @@ export function validateNameRequired(
   if (INTERACTIVE_TYPES.has(root.type)) {
     if (!root.name || root.name === "") {
       findings.push({
-        code: "missing-name",
+        code: "MISSING_NAME",
         path,
         message: `Interactive element '${root.type}' must have a name`,
+        severity: "error",
       });
     }
   }

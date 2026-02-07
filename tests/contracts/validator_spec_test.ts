@@ -5,11 +5,11 @@ import { ZodError } from "zod";
 Deno.test("ValidatorSpec - parses valid spec", () => {
   const result = ValidatorSpec.parse({
     id: "name-required",
-    version: "0.1",
+    version: "0.1.0",
   });
 
   assertEquals(result.id, "name-required");
-  assertEquals(result.version, "0.1");
+  assertEquals(result.version, "0.1.0");
 });
 
 Deno.test("ValidatorSpec - rejects empty id", () => {
@@ -34,7 +34,7 @@ Deno.test("ValidatorSpec - rejects empty version", () => {
       });
     },
     ZodError,
-    "String must contain at least 1 character(s)",
+    "Version must follow semantic versioning",
   );
 });
 

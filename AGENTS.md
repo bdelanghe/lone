@@ -13,6 +13,46 @@ bd close <id>         # Complete work
 bd sync               # Sync with git
 ```
 
+## Agent Confusion = Development Issue
+
+**CRITICAL:** When you (as an agent) get confused, encounter unclear tooling,
+missing documentation, or run into environment issues, this is a **DEVELOPMENT
+ISSUE** that must be tracked with beads. Create an issue immediately:
+
+```bash
+bd create --title="Brief description of confusion" \
+  --description="What happened, what was unclear, what you expected" \
+  --type=bug --priority=1
+```
+
+Examples of confusion that require beads issues:
+- Command not found (e.g., deno not in PATH when you try to run tests)
+- Unclear how to run tests, build, or other development tasks
+- Missing or incomplete documentation
+- Environment setup problems
+- Confusing error messages or workflows
+
+**These problems should NEVER happen.** When they do, file an issue so we can
+fix the developer experience for all future agents.
+
+## Running Tests
+
+To run tests when deno is not in your PATH:
+
+```bash
+# Build the test container (first time only)
+docker build -t semantic-test -f .devcontainer/Dockerfile .
+
+# Run all tests
+docker run --rm -v "$(pwd):/workspace" -w /workspace semantic-test deno test -A
+
+# Run specific test directory
+docker run --rm -v "$(pwd):/workspace" -w /workspace semantic-test deno test tests/contracts/
+
+# Run with watch mode (for development)
+docker run --rm -v "$(pwd):/workspace" -w /workspace semantic-test deno test -A --watch
+```
+
 ## Landing the Plane (Session Completion)
 
 **When ending a work session**, you MUST complete ALL steps below. Work is NOT

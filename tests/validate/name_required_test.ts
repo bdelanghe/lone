@@ -12,7 +12,7 @@ Deno.test("validateNameRequired - flags unnamed button", () => {
   const findings = validateNameRequired(node);
 
   assertEquals(findings.length, 1);
-  assertEquals(findings[0].code, "missing-name");
+  assertEquals(findings[0].code, "MISSING_NAME");
   assertEquals(findings[0].path, "$");
   assertEquals(
     findings[0].message,
@@ -75,7 +75,7 @@ Deno.test("validateNameRequired - walks nested children", () => {
   const findings = validateNameRequired(node);
 
   assertEquals(findings.length, 1);
-  assertEquals(findings[0].code, "missing-name");
+  assertEquals(findings[0].code, "MISSING_NAME");
   assertEquals(findings[0].path, "$.children[1].children[0]");
   assertEquals(
     findings[0].message,
@@ -125,7 +125,7 @@ Deno.test("validateNameRequired - rejects empty name string", () => {
   const findings = validateNameRequired(node);
 
   assertEquals(findings.length, 1);
-  assertEquals(findings[0].code, "missing-name");
+  assertEquals(findings[0].code, "MISSING_NAME");
 });
 
 Deno.test("validateNameRequired - accepts whitespace-only name as valid", () => {
