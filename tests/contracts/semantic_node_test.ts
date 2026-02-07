@@ -22,7 +22,7 @@ Deno.test("SemanticNode - rejects empty type", () => {
       });
     },
     ZodError,
-    "String must contain at least 1 character(s)"
+    "String must contain at least 1 character(s)",
   );
 });
 

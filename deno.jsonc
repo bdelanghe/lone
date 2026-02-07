@@ -1,6 +1,7 @@
 {
   "name": "semantic-page-elements",
   "version": "0.0.1",
+  "exports": "./src/mod.ts",
   "imports": {
     "zod": "npm:zod@3"
   },
@@ -10,6 +11,7 @@
     "fmt": "deno fmt",
     "lint": "deno lint",
     "check": "deno check **/*.ts",
-    "ci": "deno fmt --check && deno lint && deno check **/*.ts && deno test -A --fail-fast"
+    "ci": "deno fmt --check && deno lint && deno check **/*.ts && deno test -A --fail-fast",
+    "pre-commit": "deno task ci"
   }
 }

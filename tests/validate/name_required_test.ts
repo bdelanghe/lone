@@ -14,7 +14,10 @@ Deno.test("validateNameRequired - flags unnamed button", () => {
   assertEquals(findings.length, 1);
   assertEquals(findings[0].code, "missing-name");
   assertEquals(findings[0].path, "$");
-  assertEquals(findings[0].message, "Interactive element 'button' must have a name");
+  assertEquals(
+    findings[0].message,
+    "Interactive element 'button' must have a name",
+  );
 });
 
 Deno.test("validateNameRequired - passes named button", () => {
@@ -74,7 +77,10 @@ Deno.test("validateNameRequired - walks nested children", () => {
   assertEquals(findings.length, 1);
   assertEquals(findings[0].code, "missing-name");
   assertEquals(findings[0].path, "$.children[1].children[0]");
-  assertEquals(findings[0].message, "Interactive element 'link' must have a name");
+  assertEquals(
+    findings[0].message,
+    "Interactive element 'link' must have a name",
+  );
 });
 
 Deno.test("validateNameRequired - flags multiple unnamed interactive elements", () => {

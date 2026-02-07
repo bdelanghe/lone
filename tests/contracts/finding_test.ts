@@ -24,7 +24,7 @@ Deno.test("Finding - rejects empty code", () => {
       });
     },
     ZodError,
-    "String must contain at least 1 character(s)"
+    "String must contain at least 1 character(s)",
   );
 });
 
@@ -38,7 +38,7 @@ Deno.test("Finding - rejects empty path", () => {
       });
     },
     ZodError,
-    "String must contain at least 1 character(s)"
+    "String must contain at least 1 character(s)",
   );
 });
 
@@ -52,7 +52,7 @@ Deno.test("Finding - rejects empty message", () => {
       });
     },
     ZodError,
-    "String must contain at least 1 character(s)"
+    "String must contain at least 1 character(s)",
   );
 });
 
@@ -64,7 +64,7 @@ Deno.test("Finding - rejects missing fields", () => {
         path: "$.root",
       });
     },
-    ZodError
+    ZodError,
   );
 });
 

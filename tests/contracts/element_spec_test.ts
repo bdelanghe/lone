@@ -21,7 +21,7 @@ Deno.test("ElementSpec - rejects empty tag", () => {
       });
     },
     ZodError,
-    "String must contain at least 1 character(s)"
+    "String must contain at least 1 character(s)",
   );
 });
 
@@ -75,6 +75,6 @@ Deno.test("ElementSpec - validates attrs are strings", () => {
         attrs: { id: "valid", count: 123 },
       });
     },
-    ZodError
+    ZodError,
   );
 });

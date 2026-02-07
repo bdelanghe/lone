@@ -15,7 +15,7 @@ const INTERACTIVE_TYPES = new Set([
  */
 export function validateNameRequired(
   root: SemanticNodeType,
-  path = "$"
+  path = "$",
 ): FindingType[] {
   const findings: FindingType[] = [];
 

@@ -21,7 +21,7 @@ Deno.test("ValidatorSpec - rejects empty id", () => {
       });
     },
     ZodError,
-    "String must contain at least 1 character(s)"
+    "String must contain at least 1 character(s)",
   );
 });
 
@@ -34,7 +34,7 @@ Deno.test("ValidatorSpec - rejects empty version", () => {
       });
     },
     ZodError,
-    "String must contain at least 1 character(s)"
+    "String must contain at least 1 character(s)",
   );
 });
 
@@ -54,6 +54,6 @@ Deno.test("ValidatorSpec - requires both fields", () => {
         id: "name-required",
       });
     },
-    ZodError
+    ZodError,
   );
 });
