@@ -30,6 +30,21 @@ echo 'export PATH="$HOME/.npm-global/bin:$PATH"' >> ~/.zshrc
 source ~/.zshrc
 ```
 
+## Beads Docs
+
+Before DB/sync/worktree changes, check:
+
+- TROUBLESHOOTING.md
+- WORKTREES.md
+- ARCHITECTURE.md
+- CLI_REFERENCE.md
+- FAQ.md
+
+Local quick note:
+
+- `docs/BEADS_ARCHITECTURE_NOTES.md`
+- `docs/BEADS_CLI_QUICK_NOTES.md`
+
 ## Landing the Plane (Session Completion)
 
 **When ending a work session**, you MUST complete ALL steps below. Work is NOT complete until `git push` succeeds.
