@@ -71,6 +71,7 @@ works before proceeding with remaining issues.
 ## Session Close - 2026-02-07
 
 **Final State**:
+
 - 11 issues completed, 7 ready for next session
 - 28/28 tests passing
 - CI pipeline active (fmt, lint, check, test)
@@ -80,6 +81,7 @@ works before proceeding with remaining issues.
 - Branch: project-setup (ready to merge or continue)
 
 **Key Decisions**:
+
 1. Used .optional().default() pattern for Zod recursive schemas
 2. TDD approach for all validators
 3. Simple pre-commit hook (no husky/lefthook)
@@ -87,6 +89,7 @@ works before proceeding with remaining issues.
 5. Created agent.md ledger pattern for decision tracking
 
 **Next Session Priorities**:
+
 1. Contract improvements (lone-3nn) - tighter validation, more tests
 2. DOM types research (lone-wmj) - evaluate standard types vs custom
 3. MDN example (lone-4e9) - validate contracts with real semantic HTML

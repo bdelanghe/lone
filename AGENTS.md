@@ -26,6 +26,7 @@ bd create --title="Brief description of confusion" \
 ```
 
 Examples of confusion that require beads issues:
+
 - Command not found (e.g., deno not in PATH when you try to run tests)
 - Unclear how to run tests, build, or other development tasks
 - Missing or incomplete documentation
@@ -37,7 +38,8 @@ fix the developer experience for all future agents.
 
 ## Running Tests
 
-This project uses a single canonical test wrapper for consistent docker-based execution.
+This project uses a single canonical test wrapper for consistent docker-based
+execution.
 
 ### Quick Commands
 
@@ -48,6 +50,7 @@ deno task test:docker # Via deno tasks (optional)
 ```
 
 **Why this works:**
+
 - `scripts/test` is the single source of truth for docker test invocation
 - `.envrc` adds `scripts/` to PATH (so `test` just works when direnv is active)
 - Mounts `.xdg/` directories for Deno/npm cache persistence across runs
@@ -69,9 +72,11 @@ direnv allow
 ### XDG Cache Persistence
 
 The test wrapper mounts `.xdg/cache`, `.xdg/config`, and `.xdg/data` into the
-container. This persists Deno's downloaded modules and npm artifacts across runs.
+container. This persists Deno's downloaded modules and npm artifacts across
+runs.
 
 **Benefits:**
+
 - Fast: downloads cached between test runs
 - Reproducible: state is explicit and repo-local
 - Cleanable: `rm -rf .xdg` nukes all cached state

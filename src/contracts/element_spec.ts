@@ -25,17 +25,23 @@ const baseSchema = z.object({
     .regex(tagRegex, "Tag must be lowercase alphanumeric with optional hyphens")
     .refine(
       (tag) => tag !== "script" && tag !== "iframe",
-      "Script and iframe tags are not allowed for security reasons"
+      "Script and iframe tags are not allowed for security reasons",
     ),
   attrs: z.record(
-    z.string().regex(attrNameRegex, "Attribute names must be lowercase alphanumeric"),
-    z.string().max(10000)
+    z.string().regex(
+      attrNameRegex,
+      "Attribute names must be lowercase alphanumeric",
+    ),
+    z.string().max(10000),
   )
     .optional()
     .default({})
     .refine(
-      (attrs) => !Object.keys(attrs).some((key) => dangerousAttrs.includes(key.toLowerCase())),
-      "Event handler attributes are not allowed for security reasons"
+      (attrs) =>
+        !Object.keys(attrs).some((key) =>
+          dangerousAttrs.includes(key.toLowerCase())
+        ),
+      "Event handler attributes are not allowed for security reasons",
     ),
   text: z.string().max(100000).optional(),
 });
@@ -51,6 +57,6 @@ export const ElementSpec: z.ZodType<ElementSpecType> = z.lazy(() =>
     children: z.array(ElementSpec).optional().default([]),
   }).refine(
     (node) => !(node.text && node.children && node.children.length > 0),
-    "Element cannot have both text content and children"
+    "Element cannot have both text content and children",
   )
 ) as z.ZodType<ElementSpecType>;

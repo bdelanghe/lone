@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+IMAGE="semantic-test"
+WORKDIR="/workspace"
+
+# Ensure XDG directories exist for cache persistence
+mkdir -p .xdg/cache .xdg/config .xdg/data
+
+# Run arbitrary command in container
+# Usage: ./scripts/run <command> [args...]
+# Examples:
+#   ./scripts/run deno fmt --check
+#   ./scripts/run deno lint
+#   ./scripts/run deno test
+
+docker run --rm \
+  -v "$(pwd):${WORKDIR}" -w "${WORKDIR}" \
+  -v "$(pwd)/.xdg/cache:/xdg/cache" \
+  -v "$(pwd)/.xdg/config:/xdg/config" \
+  -v "$(pwd)/.xdg/data:/xdg/data" \
+  -e XDG_CACHE_HOME=/xdg/cache \
+  -e XDG_CONFIG_HOME=/xdg/config \
+  -e XDG_DATA_HOME=/xdg/data \
+  -e DENO_DIR=/xdg/cache/deno \
+  -e NPM_CONFIG_CACHE=/xdg/cache/npm \
+  "${IMAGE}" \
+  bash -lc "$*"

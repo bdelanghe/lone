@@ -4,7 +4,8 @@ import { z } from "zod";
 const errorCodeRegex = /^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$/;
 
 // Validate JSONPath format (starts with $ and contains valid path syntax)
-const jsonPathRegex = /^\$(?:\[(?:\d+|'[^']*'|"[^"]*")\]|\.(?:[a-zA-Z_][a-zA-Z0-9_]*|\[(?:\d+|'[^']*'|"[^"]*")\]))*$/;
+const jsonPathRegex =
+  /^\$(?:\[(?:\d+|'[^']*'|"[^"]*")\]|\.(?:[a-zA-Z_][a-zA-Z0-9_]*|\[(?:\d+|'[^']*'|"[^"]*")\]))*$/;
 
 export const Severity = z.enum(["error", "warning", "info"]);
 export type SeverityType = z.infer<typeof Severity>;
