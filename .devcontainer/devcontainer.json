@@ -1,0 +1,11 @@
+{
+  "name": "lone",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "planet57.vscode-beads"
+      ]
+    }
+  }
+}

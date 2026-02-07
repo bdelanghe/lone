@@ -12,6 +12,24 @@ bd close <id>         # Complete work
 bd sync               # Sync with git
 ```
 
+## Companion Tools
+
+Use these in addition to `bd` when useful:
+
+```bash
+bdui start --open     # Browser UI for issues/board/epics
+bv --robot-triage     # Structured next-work recommendations for agents
+```
+
+Install notes:
+
+```bash
+brew install dicklesworthstone/tap/bv
+npm install -g beads-ui --prefix "$HOME/.npm-global"
+echo 'export PATH="$HOME/.npm-global/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc
+```
+
 ## Landing the Plane (Session Completion)
 
 **When ending a work session**, you MUST complete ALL steps below. Work is NOT complete until `git push` succeeds.
@@ -37,4 +55,3 @@ bd sync               # Sync with git
 - NEVER stop before pushing - that leaves work stranded locally
 - NEVER say "ready to push when you are" - YOU must push
 - If push fails, resolve and retry until it succeeds
-
