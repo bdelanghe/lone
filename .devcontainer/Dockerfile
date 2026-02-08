@@ -33,5 +33,8 @@ RUN export PATH="/root/.local/bin:$PATH" \
   && if [ -x /root/.local/bin/claude ]; then install -m 0755 /root/.local/bin/claude /usr/local/bin/claude; fi
 RUN npm install -g @openai/codex
 
+# Trust the bind-mounted workspace (host UID may differ from container user)
+RUN git config --system --add safe.directory /workspace
+
 # Beads UI
 RUN npm install -g beads-ui
