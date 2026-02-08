@@ -35,7 +35,8 @@ export function validateScreenReaderContent(
       findings.push({
         code: "CONTENT_HIDDEN_FROM_SR",
         path: currentPath,
-        message: "Content is hidden from screen readers via display/visibility.",
+        message:
+          "Content is hidden from screen readers via display/visibility. Avoid hiding meaningful content or use aria-hidden intentionally.",
         severity: "error",
       });
     }

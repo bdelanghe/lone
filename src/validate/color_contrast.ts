@@ -29,7 +29,8 @@ export function validateColorContrast(
       findings.push({
         code: "INSUFFICIENT_CONTRAST",
         path: currentPath,
-        message: `${label} contrast ratio ${ratio.toFixed(2)}:1 is below ${minRatio}:1.`,
+        message:
+          `${label} contrast ratio ${ratio.toFixed(2)}:1 is below ${minRatio}:1. Increase contrast to at least ${minRatio}:1.`,
         severity: "error",
       });
     }

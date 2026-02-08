@@ -125,7 +125,7 @@ function checkAttributeValues(
       findings.push({
         code: "ARIA_INVALID_ATTRIBUTE_VALUE",
         path,
-        message: `${attr} on role '${role}' must be one of: ${allowed.join(", ")}.`,
+        message: `Attribute ${attr} on role '${role}' must be one of: ${allowed.join(", ")}.`,
         severity: "error",
       });
     }
@@ -146,7 +146,7 @@ function checkRedundantRole(
     findings.push({
       code: "REDUNDANT_ROLE",
       path,
-      message: `Role '${role}' is redundant on <${node.type}>.`,
+      message: `Role '${role}' is redundant on <${node.type}>. Remove the role attribute.`,
       severity: "warning",
     });
   }
@@ -166,7 +166,8 @@ function checkConflictingRole(
     findings.push({
       code: "CONFLICTING_ROLE",
       path,
-      message: `Role '${role}' conflicts with native <${node.type}> semantics.`,
+      message:
+        `Role '${role}' conflicts with native <${node.type}> semantics. Remove the role or change the element.`,
       severity: "error",
     });
   }
@@ -195,7 +196,8 @@ function checkRelationships(
         findings.push({
           code: "ARIA_RELATIONSHIP_MISSING_TARGET",
           path,
-          message: `${relation.key} references missing id '${id}'.`,
+          message:
+            `ARIA relationship ${relation.key} references missing id '${id}'. Ensure the referenced id exists.`,
           severity: "error",
         });
       }
@@ -217,7 +219,7 @@ function checkLiveRegion(
     findings.push({
       code: "ARIA_LIVE_INVALID",
       path,
-      message: "aria-live must be off, polite, or assertive.",
+      message: "Aria-live must be off, polite, or assertive.",
       severity: "error",
     });
   }
