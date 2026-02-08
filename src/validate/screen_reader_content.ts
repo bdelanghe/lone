@@ -33,7 +33,7 @@ export function validateScreenReaderContent(
 
     if (hidden && !ariaHidden) {
       findings.push({
-        code: "CONTENT_HIDDEN_FROM_SR",
+        code: "LONE_SR_CONTENT_HIDDEN",
         path: currentPath,
         message:
           "Content is hidden from screen readers via display/visibility. Avoid hiding meaningful content or use aria-hidden intentionally.",
@@ -43,7 +43,7 @@ export function validateScreenReaderContent(
 
     if (interactive && hidden) {
       findings.push({
-        code: "INTERACTIVE_HIDDEN",
+        code: "LONE_SR_INTERACTIVE_HIDDEN",
         path: currentPath,
         message: "Interactive elements should not be hidden from users.",
         severity: "error",
@@ -52,7 +52,7 @@ export function validateScreenReaderContent(
 
     if (ariaHidden && isFocusable(props, interactive)) {
       findings.push({
-        code: "ARIA_HIDDEN_FOCUSABLE",
+        code: "LONE_SR_ARIA_HIDDEN_FOCUSABLE",
         path: currentPath,
         message: "Focusable elements must not be aria-hidden.",
         severity: "error",
@@ -61,7 +61,7 @@ export function validateScreenReaderContent(
 
     if (srOnly && !hasMeaningfulText(node)) {
       findings.push({
-        code: "SR_ONLY_NO_TEXT",
+        code: "LONE_SR_ONLY_NO_TEXT",
         path: currentPath,
         message: "Visually hidden content should include meaningful text.",
         severity: "warning",

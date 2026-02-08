@@ -26,8 +26,8 @@ Deno.test("validateKeyboardAccessible - flags non-tabbable interactive elements"
   const findings = validateKeyboardAccessible(node);
   const codes = findings.map((finding) => finding.code);
 
-  assertEquals(codes.includes("NEGATIVE_TABINDEX"), true);
-  assertEquals(codes.includes("NOT_FOCUSABLE"), true);
+  assertEquals(codes.includes("LONE_KEYBOARD_NEGATIVE_TABINDEX"), true);
+  assertEquals(codes.includes("LONE_KEYBOARD_NOT_FOCUSABLE"), true);
 });
 
 Deno.test("validateKeyboardAccessible - requires tabindex for custom interactive elements", () => {
@@ -41,7 +41,7 @@ Deno.test("validateKeyboardAccessible - requires tabindex for custom interactive
   const findings = validateKeyboardAccessible(node);
 
   assertEquals(findings.length, 1);
-  assertEquals(findings[0].code, "MISSING_TABINDEX");
+  assertEquals(findings[0].code, "LONE_KEYBOARD_MISSING_TABINDEX");
 });
 
 Deno.test("validateKeyboardAccessible - validates keyboard activation keys", () => {
@@ -55,7 +55,7 @@ Deno.test("validateKeyboardAccessible - validates keyboard activation keys", () 
   const findings = validateKeyboardAccessible(node);
 
   assertEquals(findings.length, 1);
-  assertEquals(findings[0].code, "MISSING_KEYBOARD_HANDLER");
+  assertEquals(findings[0].code, "LONE_KEYBOARD_MISSING_KEYBOARD_HANDLER");
 });
 
 Deno.test("validateKeyboardAccessible - requires Escape to close modal", () => {
@@ -69,7 +69,7 @@ Deno.test("validateKeyboardAccessible - requires Escape to close modal", () => {
   const findings = validateKeyboardAccessible(node);
   const codes = findings.map((finding) => finding.code);
 
-  assertEquals(codes.includes("MISSING_ESCAPE_HANDLER"), true);
+  assertEquals(codes.includes("LONE_KEYBOARD_MISSING_ESCAPE_HANDLER"), true);
 });
 
 Deno.test("validateKeyboardAccessible - requires arrow keys for widgets", () => {
@@ -83,7 +83,7 @@ Deno.test("validateKeyboardAccessible - requires arrow keys for widgets", () => 
   const findings = validateKeyboardAccessible(node);
 
   assertEquals(findings.length, 1);
-  assertEquals(findings[0].code, "MISSING_ARROW_KEY_SUPPORT");
+  assertEquals(findings[0].code, "LONE_KEYBOARD_MISSING_ARROW_KEY_SUPPORT");
 });
 
 Deno.test("validateKeyboardAccessible - flags keyboard traps without escape", () => {
@@ -97,7 +97,7 @@ Deno.test("validateKeyboardAccessible - flags keyboard traps without escape", ()
   const findings = validateKeyboardAccessible(node);
 
   assertEquals(findings.length, 1);
-  assertEquals(findings[0].code, "KEYBOARD_TRAP");
+  assertEquals(findings[0].code, "LONE_KEYBOARD_TRAP");
 });
 
 Deno.test("validateKeyboardAccessible - flags out-of-order tabindex", () => {
@@ -121,7 +121,7 @@ Deno.test("validateKeyboardAccessible - flags out-of-order tabindex", () => {
   const findings = validateKeyboardAccessible(node);
   const codes = findings.map((finding) => finding.code);
 
-  assertEquals(codes.includes("TABINDEX_OUT_OF_ORDER"), true);
+  assertEquals(codes.includes("LONE_KEYBOARD_TABINDEX_OUT_OF_ORDER"), true);
 });
 
 Deno.test("validateKeyboardAccessible - flags missing focus indicator", () => {
@@ -134,7 +134,7 @@ Deno.test("validateKeyboardAccessible - flags missing focus indicator", () => {
   const findings = validateKeyboardAccessible(node);
 
   assertEquals(findings.length, 1);
-  assertEquals(findings[0].code, "MISSING_FOCUS_INDICATOR");
+  assertEquals(findings[0].code, "LONE_KEYBOARD_MISSING_FOCUS_INDICATOR");
 });
 
 Deno.test("simulateTabNavigation - orders by tabindex then document order", () => {

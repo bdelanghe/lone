@@ -12,7 +12,7 @@ Deno.test("validateScreenReaderContent - flags display none content", () => {
   const findings = validateScreenReaderContent(node);
 
   assertEquals(findings.length, 1);
-  assertEquals(findings[0].code, "CONTENT_HIDDEN_FROM_SR");
+  assertEquals(findings[0].code, "LONE_SR_CONTENT_HIDDEN");
 });
 
 Deno.test("validateScreenReaderContent - allows visually hidden content with text", () => {
@@ -38,7 +38,7 @@ Deno.test("validateScreenReaderContent - flags aria-hidden focusable element", (
   const findings = validateScreenReaderContent(node);
 
   assertEquals(findings.length, 1);
-  assertEquals(findings[0].code, "ARIA_HIDDEN_FOCUSABLE");
+  assertEquals(findings[0].code, "LONE_SR_ARIA_HIDDEN_FOCUSABLE");
 });
 
 Deno.test("validateScreenReaderContent - flags hidden interactive element", () => {
@@ -51,8 +51,8 @@ Deno.test("validateScreenReaderContent - flags hidden interactive element", () =
   const findings = validateScreenReaderContent(node);
 
   assertEquals(findings.length, 2);
-  assertEquals(findings[0].code, "CONTENT_HIDDEN_FROM_SR");
-  assertEquals(findings[1].code, "INTERACTIVE_HIDDEN");
+  assertEquals(findings[0].code, "LONE_SR_CONTENT_HIDDEN");
+  assertEquals(findings[1].code, "LONE_SR_INTERACTIVE_HIDDEN");
 });
 
 Deno.test("validateScreenReaderContent - warns on sr-only without text", () => {
@@ -65,5 +65,5 @@ Deno.test("validateScreenReaderContent - warns on sr-only without text", () => {
   const findings = validateScreenReaderContent(node);
 
   assertEquals(findings.length, 1);
-  assertEquals(findings[0].code, "SR_ONLY_NO_TEXT");
+  assertEquals(findings[0].code, "LONE_SR_ONLY_NO_TEXT");
 });

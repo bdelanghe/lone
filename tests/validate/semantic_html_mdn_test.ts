@@ -56,9 +56,9 @@ Deno.test("validateSemanticHTML - bad semantics triggers all core checks", () =>
   const findings = validateSemanticHTML(badNode);
   const codes = findings.map((finding) => finding.code);
 
-  assertEquals(codes.includes("HEADING_LEVEL_SKIP"), true);
-  assertEquals(codes.includes("LINK_WITHOUT_HREF"), true);
-  assertEquals(codes.includes("INVALID_LIST_CHILD"), true);
-  assertEquals(codes.includes("TABLE_MISSING_HEADERS"), true);
-  assertEquals(codes.includes("FORM_CONTROL_UNLABELED"), true);
+  assertEquals(codes.includes("LONE_SEMANTIC_HEADING_LEVEL_SKIP"), true);
+  assertEquals(codes.includes("LONE_SEMANTIC_LINK_WITHOUT_HREF"), true);
+  assertEquals(codes.includes("LONE_SEMANTIC_INVALID_LIST_CHILD"), true);
+  assertEquals(codes.includes("LONE_SEMANTIC_TABLE_MISSING_HEADERS"), true);
+  assertEquals(codes.includes("LONE_SEMANTIC_FORM_CONTROL_UNLABELED"), true);
 });

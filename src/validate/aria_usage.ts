@@ -92,7 +92,7 @@ function checkRequiredAttributes(
   for (const attr of rule.required) {
     if (!Object.prototype.hasOwnProperty.call(props, attr)) {
       findings.push({
-        code: "ARIA_REQUIRED_ATTRIBUTE_MISSING",
+        code: "LONE_ARIA_REQUIRED_ATTRIBUTE_MISSING",
         path,
         message: `Role '${role}' requires ${attr}.`,
         severity: "error",
@@ -123,9 +123,11 @@ function checkAttributeValues(
     const value = normalizeBooleanish(props[attr]);
     if (value && !allowed.includes(value)) {
       findings.push({
-        code: "ARIA_INVALID_ATTRIBUTE_VALUE",
+        code: "LONE_ARIA_INVALID_ATTRIBUTE_VALUE",
         path,
-        message: `Attribute ${attr} on role '${role}' must be one of: ${allowed.join(", ")}.`,
+        message: `Attribute ${attr} on role '${role}' must be one of: ${
+          allowed.join(", ")
+        }.`,
         severity: "error",
       });
     }
@@ -141,12 +143,20 @@ function checkRedundantRole(
   if (!role) {
     return;
   }
+  // Only flag when the role was explicitly set via a role attribute.
+  const explicitRole = typeof node.props?.role === "string"
+    ? node.props.role.trim()
+    : "";
+  if (!explicitRole) {
+    return;
+  }
   const redundantRoles = REDUNDANT_ROLE_BY_TYPE[node.type];
   if (redundantRoles?.includes(role)) {
     findings.push({
-      code: "REDUNDANT_ROLE",
+      code: "LONE_ARIA_REDUNDANT_ROLE",
       path,
-      message: `Role '${role}' is redundant on <${node.type}>. Remove the role attribute.`,
+      message:
+        `Role '${role}' is redundant on <${node.type}>. Remove the role attribute.`,
       severity: "warning",
     });
   }
@@ -164,7 +174,7 @@ function checkConflictingRole(
   const conflicts = CONFLICTING_ROLE_BY_TYPE[node.type];
   if (conflicts?.includes(role)) {
     findings.push({
-      code: "CONFLICTING_ROLE",
+      code: "LONE_ARIA_CONFLICTING_ROLE",
       path,
       message:
         `Role '${role}' conflicts with native <${node.type}> semantics. Remove the role or change the element.`,
@@ -183,10 +193,12 @@ function checkRelationships(
   const labelledBy = getStringProp(props, "aria-labelledby");
   const describedBy = getStringProp(props, "aria-describedby");
 
-  for (const relation of [
-    { key: "aria-labelledby", value: labelledBy },
-    { key: "aria-describedby", value: describedBy },
-  ]) {
+  for (
+    const relation of [
+      { key: "aria-labelledby", value: labelledBy },
+      { key: "aria-describedby", value: describedBy },
+    ]
+  ) {
     if (!relation.value) {
       continue;
     }
@@ -194,7 +206,7 @@ function checkRelationships(
     for (const id of ids) {
       if (!idMap.has(id)) {
         findings.push({
-          code: "ARIA_RELATIONSHIP_MISSING_TARGET",
+          code: "LONE_ARIA_RELATIONSHIP_MISSING_TARGET",
           path,
           message:
             `ARIA relationship ${relation.key} references missing id '${id}'. Ensure the referenced id exists.`,
@@ -217,7 +229,7 @@ function checkLiveRegion(
   }
   if (!LIVE_REGION_VALUES.has(live)) {
     findings.push({
-      code: "ARIA_LIVE_INVALID",
+      code: "LONE_ARIA_LIVE_INVALID",
       path,
       message: "Aria-live must be off, polite, or assertive.",
       severity: "error",

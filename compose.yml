@@ -1,0 +1,39 @@
+services:
+  dev:
+    image: semantic-test
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+    env_file:
+      - .env
+    volumes:
+      - .:/workspace
+      # Needed for git worktrees: the .git file inside the worktree points to this host path.
+      - ${BARE_REPO:?Set BARE_REPO (e.g. in .env)}:${BARE_REPO:?Set BARE_REPO (e.g. in .env)}
+      # Persist Claude Code state (including any ~/.claude.json it creates) inside a named volume.
+      # Avoids host bind-mounts and prevents macOS-only absolute symlinks from breaking in Linux.
+      - vscode-home:/home/vscode
+      - ${BEADS_DIR:?Set BEADS_DIR (e.g. in .env)}:/beads
+    ports:
+      - "3000:3000"
+    environment:
+      - IN_DEV_CONTAINER=1
+      # XDG base dirs (keep tool state under ~/.config, ~/.local/share, ~/.local/state, ~/.cache)
+      - XDG_CACHE_HOME=/home/vscode/.cache
+      - XDG_CONFIG_HOME=/home/vscode/.config
+      - XDG_DATA_HOME=/home/vscode/.local/share
+      - XDG_STATE_HOME=/home/vscode/.local/state
+      - DENO_DIR=/home/vscode/.cache/deno
+      - NPM_CONFIG_CACHE=/home/vscode/.cache/npm
+      # gh uses $BROWSER for -w/--web flows; set it to a no-op so we don't error in headless containers.
+      - BROWSER=true
+      # Do not pass ANTHROPIC_API_KEY by default; Claude warns when both it and a claude.ai token are present.
+      - BEADS_DIR=/beads
+      # beads-ui (bdui) prefers BEADS_DB for selecting the SQLite DB.
+      - BEADS_DB=/beads/beads.db
+
+volumes:
+  vscode-home: {}

@@ -19,14 +19,14 @@ export function validateTextAlternatives(
 
       if (!altProvided && !isDecorative) {
         findings.push({
-          code: "MISSING_ALT",
+          code: "LONE_TEXT_MISSING_ALT",
           path: currentPath,
           message: "Image elements must provide alt text.",
           severity: "error",
         });
       } else if (alt === "" && !isDecorative) {
         findings.push({
-          code: "EMPTY_ALT_MEANINGFUL",
+          code: "LONE_TEXT_EMPTY_ALT_MEANINGFUL",
           path: currentPath,
           message: "Meaningful images must not use empty alt text.",
           severity: "error",
@@ -37,7 +37,7 @@ export function validateTextAlternatives(
     if (node.type === "svg") {
       if (!hasAccessibleLabel(node, props)) {
         findings.push({
-          code: "MISSING_SVG_TEXT_ALTERNATIVE",
+          code: "LONE_TEXT_MISSING_SVG_ALT",
           path: currentPath,
           message: "SVG elements must have a title/desc or ARIA label.",
           severity: "error",
@@ -48,7 +48,7 @@ export function validateTextAlternatives(
     if (node.type === "video" || node.type === "audio") {
       if (!hasMediaAlternative(props, node)) {
         findings.push({
-          code: "MISSING_MEDIA_TEXT_ALTERNATIVE",
+          code: "LONE_TEXT_MISSING_MEDIA_ALT",
           path: currentPath,
           message: "Audio and video elements must provide captions or transcripts.",
           severity: "error",
@@ -59,7 +59,7 @@ export function validateTextAlternatives(
     if (isIconOnlyControl(node, props)) {
       if (!hasAccessibleLabel(node, props)) {
         findings.push({
-          code: "ICON_BUTTON_MISSING_LABEL",
+          code: "LONE_TEXT_ICON_BUTTON_MISSING_LABEL",
           path: currentPath,
           message: "Icon-only controls must include an accessible label.",
           severity: "error",
@@ -73,7 +73,7 @@ export function validateTextAlternatives(
         Boolean(getStringProp(props, "fallbackText"));
       if (!hasFallback) {
         findings.push({
-          code: "MISSING_FALLBACK_CONTENT",
+          code: "LONE_TEXT_MISSING_FALLBACK_CONTENT",
           path: currentPath,
           message: "Canvas and iframe elements must include fallback content.",
           severity: "error",

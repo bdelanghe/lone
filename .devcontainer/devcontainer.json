@@ -1,6 +1,11 @@
 {
   "name": "semantic-page-elements",
-  "build": { "dockerfile": "Dockerfile" },
+  "dockerComposeFile": "../compose.yml",
+  "service": "dev",
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
+  "forwardPorts": [3000],
+  "postStartCommand": "bash -lc '/workspace/scripts/devcontainer-post-start.sh'",
   "features": {},
   "customizations": {
     "vscode": {
@@ -14,6 +19,5 @@
       }
     }
   },
-  "postCreateCommand": "deno --version && deno task test",
   "remoteUser": "vscode"
 }

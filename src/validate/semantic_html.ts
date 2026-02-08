@@ -66,7 +66,7 @@ function validateHeadingHierarchy(
     // Disallow skipping levels when going deeper (e.g., h1 -> h3)
     if (curr.level > prev.level + 1) {
       findings.push({
-        code: "HEADING_LEVEL_SKIP",
+        code: "LONE_SEMANTIC_HEADING_LEVEL_SKIP",
         path: curr.path,
         message:
           `Heading level ${curr.level} skips level ${prev.level + 1}. Use h${prev.level + 1} before h${curr.level}.`,
@@ -78,7 +78,7 @@ function validateHeadingHierarchy(
   // Check for missing h1
   if (headingLevels.length > 0 && !headingLevels.some((h) => h.level === 1)) {
     findings.push({
-      code: "MISSING_H1",
+      code: "LONE_SEMANTIC_MISSING_H1",
       path: rootPath,
       message: "Document should have at least one h1 heading.",
       severity: "warning",
@@ -115,7 +115,7 @@ function validateButtonVsLink(
       node.props?.["onclick"]
     ) {
       findings.push({
-        code: "LINK_WITH_ONCLICK",
+        code: "LONE_SEMANTIC_LINK_WITH_ONCLICK",
         path: currentPath,
         message:
           "Link has onclick handler. Use <button> for actions, <a> for navigation.",
@@ -129,7 +129,7 @@ function validateButtonVsLink(
       !node.props?.["href"]
     ) {
       findings.push({
-        code: "LINK_WITHOUT_HREF",
+        code: "LONE_SEMANTIC_LINK_WITHOUT_HREF",
         path: currentPath,
         message: "Link missing href attribute. Use <button> if not navigating.",
         severity: "error",
@@ -142,7 +142,7 @@ function validateButtonVsLink(
       node.props?.["href"]
     ) {
       findings.push({
-        code: "BUTTON_WITH_HREF",
+        code: "LONE_SEMANTIC_BUTTON_WITH_HREF",
         path: currentPath,
         message:
           "Button has href attribute. Use <a> for navigation, <button> for actions.",
@@ -180,7 +180,7 @@ function validateListStructure(
 
         if (!isListItem) {
           findings.push({
-            code: "INVALID_LIST_CHILD",
+            code: "LONE_SEMANTIC_INVALID_LIST_CHILD",
             path: `${currentPath}.children[${index}]`,
             message:
               `List child must be <li> or role="listitem", found type="${child.type}".`,
@@ -231,7 +231,7 @@ function validateTableSemantics(
               !cell.props?.["scope"]
             ) {
               findings.push({
-                code: "TH_MISSING_SCOPE",
+                code: "LONE_SEMANTIC_TH_MISSING_SCOPE",
                 path: containerPath,
                 message:
                   "Header cells (<th>) should have scope attribute (row, col, rowgroup, colgroup).",
@@ -271,7 +271,7 @@ function validateTableSemantics(
       // Recommend thead/tbody for complex tables
       if (!hasTheadOrTbody && node.children.length > 3) {
         findings.push({
-          code: "TABLE_MISSING_THEAD_TBODY",
+          code: "LONE_SEMANTIC_TABLE_MISSING_THEAD_TBODY",
           path: currentPath,
           message:
             "Complex tables should use <thead> and <tbody> for better structure.",
@@ -282,7 +282,7 @@ function validateTableSemantics(
       // Recommend header cells for all tables
       if (!hasHeaderCells) {
         findings.push({
-          code: "TABLE_MISSING_HEADERS",
+          code: "LONE_SEMANTIC_TABLE_MISSING_HEADERS",
           path: currentPath,
           message:
             "Tables should have header cells (<th> or role='columnheader/rowheader').",
@@ -348,7 +348,7 @@ function validateFormLabels(
       // Form controls should have a label via <label for>, aria-label, or aria-labelledby
       if (!hasName && !hasLabelAssociation && !hasAriaLabel) {
         findings.push({
-          code: "FORM_CONTROL_UNLABELED",
+          code: "LONE_SEMANTIC_FORM_CONTROL_UNLABELED",
           path: currentPath,
           message:
             "Form control should have associated <label>, aria-label, or aria-labelledby.",

@@ -388,29 +388,22 @@ fix the developer experience for all future agents.
 
 ## Running Tests
 
-This project uses a single canonical test wrapper for consistent docker-based
-execution.
+This project uses the devcontainer CLI for consistent container-based execution.
 
 ### Quick Commands
 
 ```bash
-test                  # Canonical way - run all tests in docker (shows last 30 lines)
-./scripts/test        # Explicit path (works everywhere)
-deno task test:docker # Via deno tasks (optional)
+devcontainer up --workspace-folder .
+devcontainer exec --workspace-folder . deno test -A --fail-fast tests
+deno task test:docker  # shortcut
 ```
-
-**Why this works:**
-
-- `scripts/test` is the single source of truth for docker test invocation
-- `.envrc` adds `scripts/` to PATH (so `test` just works when direnv is active)
-- Mounts `.xdg/` directories for Deno/npm cache persistence across runs
 
 ### First-Time Setup
 
-Build the test container once:
+Install the devcontainer CLI once:
 
 ```bash
-docker build -t semantic-test -f .devcontainer/Dockerfile .
+npm install -g @devcontainers/cli
 ```
 
 If using direnv interactively:
@@ -419,29 +412,10 @@ If using direnv interactively:
 direnv allow
 ```
 
-### XDG Cache Persistence
+### Cache Persistence
 
-The test wrapper mounts `.xdg/cache`, `.xdg/config`, and `.xdg/data` into the
-container. This persists Deno's downloaded modules and npm artifacts across
-runs.
-
-**Benefits:**
-
-- Fast: downloads cached between test runs
-- Reproducible: state is explicit and repo-local
-- Cleanable: `rm -rf .xdg` nukes all cached state
-
-The `.xdg/` directory is in `.gitignore` - it's ephemeral build state.
-
-### Later: Devcontainer Migration
-
-When agents run inside the devcontainer, you'll just use:
-
-```bash
-deno test -A
-```
-
-The `scripts/test` wrapper remains as compatibility for host-based execution.
+Deno and npm caches use a named Docker volume (`xdg-cache`). No host-side
+cache directory needed. To reset: `docker volume rm lone_xdg-cache`
 
 ## Landing the Plane (Session Completion)
 

@@ -27,7 +27,7 @@ export function validateColorContrast(
 
     if (ratio < minRatio) {
       findings.push({
-        code: "INSUFFICIENT_CONTRAST",
+        code: "LONE_COLOR_INSUFFICIENT_CONTRAST",
         path: currentPath,
         message:
           `${label} contrast ratio ${ratio.toFixed(2)}:1 is below ${minRatio}:1. Increase contrast to at least ${minRatio}:1.`,
