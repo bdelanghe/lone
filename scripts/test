@@ -4,6 +4,11 @@ set -euo pipefail
 IMAGE="semantic-test"
 WORKDIR="/workspace"
 
+TEST_TARGETS=("$@")
+if [ "${#TEST_TARGETS[@]}" -eq 0 ]; then
+  TEST_TARGETS=("tests")
+fi
+
 # Ensure XDG directories exist for cache persistence
 mkdir -p .xdg/cache .xdg/config .xdg/data
 
@@ -18,4 +23,4 @@ docker run --rm \
   -e DENO_DIR=/xdg/cache/deno \
   -e NPM_CONFIG_CACHE=/xdg/cache/npm \
   "${IMAGE}" \
-  bash -lc 'deno test -A 2>&1 | tail -n 30; exit ${PIPESTATUS[0]}'
+  bash -lc 'deno test -A --fail-fast "$@" 2>&1 | tail -n 30; exit ${PIPESTATUS[0]}' -- "${TEST_TARGETS[@]}"

@@ -581,6 +581,130 @@ function validateButtonNames(node: SemanticNodeType): Finding[] {
 }
 ```
 
+### Keyboard Accessibility Validator
+
+The keyboard validator uses `SemanticNode` props to reason about focus order and
+keyboard interaction. It assumes native controls (`button`, `a`, `input`, etc.)
+provide built-in keyboard behavior, and only enforces keyboard handlers for
+custom widgets and roles.
+
+```typescript
+import { validateKeyboardAccessible } from "../src/validate/keyboard_accessible.ts";
+
+const findings = validateKeyboardAccessible(node);
+```
+
+**Supported props**
+- `tabIndex` / `tabindex`: explicit tab order and focusability
+- `focusVisible`: boolean flag for visible focus ring
+- `keyboardHandlers`: array or comma-separated string of supported keys
+- `keyboardTrap` / `focusTrap`: boolean flag indicating a focus trap
+- `escapeCloses`: boolean flag indicating Escape exits a trap or modal
+- `focusable`: explicit focusability override
+
+**Behavior highlights**
+- Flags interactive elements that are not focusable
+- Warns on positive `tabIndex` order regressions
+- Requires Escape to exit declared focus traps or modals
+- Ensures custom widgets support activation/arrow keys
+
+### Text Alternatives Validator
+
+The text alternatives validator checks non-text content for required labels and
+fallbacks. It relies on `SemanticNode` props to identify where text alternatives
+are supplied.
+
+```typescript
+import { validateTextAlternatives } from "../src/validate/text_alternatives.ts";
+
+const findings = validateTextAlternatives(node);
+```
+
+**Supported props**
+- `alt`: image alternative text
+- `decorative`: boolean for decorative imagery
+- `aria-label` / `aria-labelledby`: accessible labels
+- `title` / `desc`: SVG title/description
+- `captions` / `transcript`: media alternatives
+- `iconOnly`: boolean for icon-only controls
+- `fallbackText`: fallback content for `canvas`/`iframe`
+
+**Behavior highlights**
+- Images require non-empty `alt` unless decorative
+- SVGs require a title/desc or ARIA label
+- Audio/video require captions or transcripts
+- Icon-only controls must provide an accessible label
+- Canvas/iframe must include fallback content
+
+### ARIA Usage Validator
+
+The ARIA validator checks role usage, required attributes, and relationships
+between ARIA labels and target IDs.
+
+```typescript
+import { validateARIAUsage } from "../src/validate/aria_usage.ts";
+
+const findings = validateARIAUsage(node);
+```
+
+**Supported props**
+- `aria-checked`, `aria-expanded`, `aria-valuenow`, `aria-valuemin`,
+  `aria-valuemax`: required role attributes
+- `aria-labelledby` / `aria-describedby`: relationship targets (must exist)
+- `aria-live`: live region settings (`off`, `polite`, `assertive`)
+
+**Behavior highlights**
+- Missing required ARIA attributes are errors
+- Invalid ARIA attribute values are errors
+- Redundant role usage is warned (e.g., `role="button"` on `<button>`)
+- Conflicting roles with native semantics are errors
+- Missing relationship targets are errors
+
+### Screen Reader Content Validator
+
+The screen reader content validator flags content hidden from assistive
+technology and detects misuse of `aria-hidden` on focusable elements.
+
+```typescript
+import { validateScreenReaderContent } from "../src/validate/screen_reader_content.ts";
+
+const findings = validateScreenReaderContent(node);
+```
+
+**Supported props**
+- `display`, `visibility`, `hidden`: visibility controls
+- `class` / `className`: visually hidden class detection (`sr-only`, `visually-hidden`)
+- `aria-hidden`: intentional screen-reader hiding
+- `tabIndex` / `tabindex`, `focusable`: focusability checks
+
+**Behavior highlights**
+- Flags `display:none` and `visibility:hidden` content
+- Errors on `aria-hidden` when the element is focusable
+- Warns if visually hidden content has no meaningful text
+- Flags hidden interactive elements
+
+### Color Contrast Validator
+
+The color contrast validator checks text and non-text contrast ratios based on
+computed colors.
+
+```typescript
+import { validateColorContrast } from "../src/validate/color_contrast.ts";
+
+const findings = validateColorContrast(node);
+```
+
+**Supported props**
+- `color` / `textColor`: foreground color
+- `backgroundColor` / `background`: background color
+- `fontSize`, `fontWeight`, `largeText`: large text detection
+- `nonText` / `contrastType`: non-text contrast checks
+
+**Behavior highlights**
+- Normal text requires 4.5:1 contrast ratio
+- Large text requires 3:1 contrast ratio
+- Non-text elements require 3:1 contrast ratio
+
 ---
 
 ## References

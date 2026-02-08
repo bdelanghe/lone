@@ -6,13 +6,13 @@
     "zod": "npm:zod@3"
   },
   "tasks": {
-    "test": "deno test -A --fail-fast",
+    "test": "deno test -A --fail-fast tests",
     "test:docker": "./scripts/test",
-    "test:watch": "deno test -A --watch",
+    "test:watch": "deno test -A --watch tests",
     "fmt": "deno fmt",
     "lint": "deno lint",
     "check": "deno check **/*.ts",
-    "ci": "deno fmt --check && deno lint && deno check **/*.ts && deno test -A --fail-fast",
+    "ci": "deno fmt --check && deno lint && deno check **/*.ts && deno test -A --fail-fast tests",
     "pre-commit": "deno task ci"
   }
 }
