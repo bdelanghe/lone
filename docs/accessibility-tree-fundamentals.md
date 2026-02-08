@@ -683,6 +683,28 @@ const findings = validateScreenReaderContent(node);
 - Warns if visually hidden content has no meaningful text
 - Flags hidden interactive elements
 
+### Color Contrast Validator
+
+The color contrast validator checks text and non-text contrast ratios based on
+computed colors.
+
+```typescript
+import { validateColorContrast } from "../src/validate/color_contrast.ts";
+
+const findings = validateColorContrast(node);
+```
+
+**Supported props**
+- `color` / `textColor`: foreground color
+- `backgroundColor` / `background`: background color
+- `fontSize`, `fontWeight`, `largeText`: large text detection
+- `nonText` / `contrastType`: non-text contrast checks
+
+**Behavior highlights**
+- Normal text requires 4.5:1 contrast ratio
+- Large text requires 3:1 contrast ratio
+- Non-text elements require 3:1 contrast ratio
+
 ---
 
 ## References
