@@ -171,6 +171,11 @@ Minimum steps:
 3. Push the epic branch.
 4. Create a PR into `main` with a clear summary and linked beads issues.
 
+## Blocked Epic Items
+
+If an epic item is blocked by another epic, move the blocked issue to the epic
+that owns the blocking issue, so ownership matches the dependency graph.
+
 ## Landing the Plane (Session Completion)
 
 **When ending a work session**, you MUST complete ALL steps below. Work is NOT
