@@ -122,33 +122,28 @@ fix the developer experience for all future agents.
 ## Starting Development
 
 ```bash
-./scripts/shell
+devcontainer up --workspace-folder .
+devcontainer exec --workspace-folder . bash
 ```
 
-This is the single entry point. It will:
-- Build the `semantic-test` image automatically if missing
-- Mount the workspace, git bare repo (worktree support), and Deno cache
-- Mount `BEADS_DIR` so `bd` works inside the container
-- Drop you into bash with `deno`, `bd`, `bdui`, `claude`, and `codex` available
+This starts the dev container (building it if needed) and opens a shell with
+`deno`, `bd`, `bdui`, `claude`, and `codex` available.
 
-From inside the container, all scripts are container-aware (`IN_DEV_CONTAINER=1`)
-and run directly without re-launching Docker.
+Mounts: workspace, git bare repo (worktree support), `~/.claude`, `BEADS_DIR`.
 
-To rebuild the image after Dockerfile changes:
+To rebuild after Dockerfile changes:
 
 ```bash
-docker build -t semantic-test -f .devcontainer/Dockerfile .
+devcontainer up --workspace-folder . --build-no-cache
 ```
 
 ## Running Tests
 
 ```bash
-test                  # Canonical way - run all tests in docker (shows last 30 lines)
-./scripts/test        # Explicit path (works everywhere)
-deno task test:docker # Via deno tasks (optional)
+devcontainer exec --workspace-folder . deno test -A --fail-fast tests
+devcontainer exec --workspace-folder . deno test -A --fail-fast tests/validate/keyboard_accessible_test.ts
+deno task test:docker  # shortcut
 ```
-
-Works from host or inside the container (`scripts/test` detects which context).
 
 If using direnv interactively:
 
@@ -156,29 +151,12 @@ If using direnv interactively:
 direnv allow
 ```
 
-### XDG Cache Persistence
+### Cache Persistence
 
-The test wrapper mounts `.xdg/cache`, `.xdg/config`, and `.xdg/data` into the
-container. This persists Deno's downloaded modules and npm artifacts across
-runs.
+Deno and npm caches are stored in a named Docker volume (`xdg-cache`). No
+host-side cache directory needed.
 
-**Benefits:**
-
-- Fast: downloads cached between test runs
-- Reproducible: state is explicit and repo-local
-- Cleanable: `rm -rf .xdg` nukes all cached state
-
-The `.xdg/` directory is in `.gitignore` - it's ephemeral build state.
-
-### Later: Devcontainer Migration
-
-When agents run inside the devcontainer, you'll just use:
-
-```bash
-deno test -A
-```
-
-The `scripts/test` wrapper remains as compatibility for host-based execution.
+To nuke the cache: `docker volume rm lone_xdg-cache`
 
 ## Epic Workflow (Feature Branch + PR)
 

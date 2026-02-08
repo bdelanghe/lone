@@ -1,6 +1,9 @@
 /.xdg/
 /.tools/
 
+# Local environment overrides (often contains secrets)
+.env
+
 # Beads runtime database artifacts must stay local-only.
 .beads/*.db
 .beads/*.db-*

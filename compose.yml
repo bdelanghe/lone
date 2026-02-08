@@ -1,0 +1,25 @@
+services:
+  dev:
+    image: semantic-test
+    build:
+      context: .
+      dockerfile: .devcontainer/Dockerfile
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/workspace
+      - ${BARE_REPO:-.git}:${BARE_REPO:-.git}
+      - xdg-cache:/home/vscode/.cache
+      - ${HOME}/.claude:${HOME}/.claude
+      - ${BEADS_DIR}:${BEADS_DIR}
+    environment:
+      - IN_DEV_CONTAINER=1
+      - XDG_CACHE_HOME=/home/vscode/.cache
+      - DENO_DIR=/home/vscode/.cache/deno
+      - NPM_CONFIG_CACHE=/home/vscode/.cache/npm
+      - ANTHROPIC_API_KEY
+      - BEADS_DIR
+
+volumes:
+  xdg-cache:

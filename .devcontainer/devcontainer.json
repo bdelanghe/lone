@@ -1,6 +1,9 @@
 {
   "name": "semantic-page-elements",
-  "build": { "dockerfile": "Dockerfile" },
+  "dockerComposeFile": "../compose.yml",
+  "service": "dev",
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
   "features": {},
   "customizations": {
     "vscode": {
@@ -14,6 +17,6 @@
       }
     }
   },
-  "postCreateCommand": "deno --version && deno task test",
+  "postCreateCommand": "sudo mkdir -p /home/vscode/.cache/deno /home/vscode/.cache/npm && sudo chown -R vscode:vscode /home/vscode/.cache && deno --version && deno task test",
   "remoteUser": "vscode"
 }

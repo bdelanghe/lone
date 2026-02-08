@@ -89,16 +89,16 @@ tests/           # Contract + pipeline tests
 
 Lone development runs in a pinned container setup. Primary flow:
 
-1. Build the test image once.
-2. Run tests via `./scripts/test` (pass paths for targeted runs).
+1. Start the dev container.
+2. Run tests (pass paths for targeted runs).
 3. Keep changes contract-first and TDD-first.
 4. Run quality gates before commit.
 
 ```bash
-docker build -t semantic-test -f .devcontainer/Dockerfile .
-./scripts/test
-./scripts/test tests/validate/keyboard_accessible_test.ts
-deno task ci # requires local deno or a devcontainer
+devcontainer up --workspace-folder .
+devcontainer exec --workspace-folder . deno test -A --fail-fast tests
+devcontainer exec --workspace-folder . deno test -A --fail-fast tests/validate/keyboard_accessible_test.ts
+devcontainer exec --workspace-folder . deno task ci
 ```
 
 Optional via Deno task:
