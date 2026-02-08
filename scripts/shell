@@ -4,24 +4,25 @@ set -euo pipefail
 IMAGE="semantic-test"
 WORKDIR="/workspace"
 
-TEST_TARGETS=("$@")
-if [ "${#TEST_TARGETS[@]}" -eq 0 ]; then
-  TEST_TARGETS=("tests")
+# Already inside the container
+if [ "${IN_DEV_CONTAINER:-}" = "1" ]; then
+  echo "Already inside the dev container." >&2
+  exit 0
 fi
 
-# Already inside the container — run directly
-if [ "${IN_DEV_CONTAINER:-}" = "1" ]; then
-  exec deno test -A --fail-fast "${TEST_TARGETS[@]}"
-fi
+# Resolve bare repo for git worktree support
+BARE_REPO="$(git rev-parse --git-common-dir 2>/dev/null || true)"
+BARE_REPO="$(cd "${BARE_REPO}" && pwd -P)"
 
 mkdir -p .xdg/cache
 
-docker run --rm \
+exec docker run --rm -it \
   -v "$(pwd):${WORKDIR}" -w "${WORKDIR}" \
+  -v "${BARE_REPO}:${BARE_REPO}" \
   -v "$(pwd)/.xdg/cache:/xdg/cache" \
   -e IN_DEV_CONTAINER=1 \
   -e XDG_CACHE_HOME=/xdg/cache \
   -e DENO_DIR=/xdg/cache/deno \
   -e NPM_CONFIG_CACHE=/xdg/cache/npm \
   "${IMAGE}" \
-  bash -lc 'deno test -A --fail-fast "$@" 2>&1 | tail -n 30; exit ${PIPESTATUS[0]}' -- "${TEST_TARGETS[@]}"
+  bash
