@@ -20,12 +20,13 @@ export function validateNameRequired(
   const findings: FindingType[] = [];
 
   // Check if current node needs a name
-  if (INTERACTIVE_TYPES.has(root.type)) {
+  const typeOrRole = root.role ?? root.type;
+  if (INTERACTIVE_TYPES.has(typeOrRole)) {
     if (!root.name || root.name === "") {
       findings.push({
         code: "LONE_NAME_MISSING",
         path,
-        message: `Interactive element '${root.type}' must have a name.`,
+        message: `Interactive element '${typeOrRole}' must have a name.`,
         severity: "error",
       });
     }

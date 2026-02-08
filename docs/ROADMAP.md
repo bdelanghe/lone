@@ -25,6 +25,8 @@ while enforcing a stable contract boundary for downstream UI frameworks.
 These four steps are the only near-term roadmap items. Everything else is
 explicitly deferred until the POC exists.
 
+Backend choice for v0: DOM-only extraction (zod contracts as the core engine).
+
 ---
 
 ## Post-POC

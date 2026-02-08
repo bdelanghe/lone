@@ -1,4 +1,14 @@
 import type { FindingType } from "../contracts/finding.ts";
+import { sortFindings } from "../contracts/finding.ts";
+import type { SemanticNodeType } from "../contracts/semantic_node.ts";
+import { domToSemanticNode } from "../adapters/dom.ts";
+import { validateSemanticHTML } from "../validate/semantic_html.ts";
+import { validateNameRequired } from "../validate/nameable.ts";
+import { validateKeyboardAccessible } from "../validate/keyboard_accessible.ts";
+import { validateARIAUsage } from "../validate/aria_usage.ts";
+import { validateTextAlternatives } from "../validate/text_alternatives.ts";
+import { validateScreenReaderContent } from "../validate/screen_reader_content.ts";
+import { validateColorContrast } from "../validate/color_contrast.ts";
 
 export type Element = typeof globalThis extends { Element: infer E }
   ? E
@@ -17,11 +27,11 @@ export type BlessResult<T extends Element> =
   | { ok: true; value: Blessed<T>; findings: FindingType[] }
   | { ok: false; findings: FindingType[] };
 
-const backendMissingFinding: FindingType = {
-  code: "LONE_ENGINE_BACKEND_UNCONFIGURED",
+const invalidSubjectFinding: FindingType = {
+  code: "LONE_ENGINE_INVALID_SUBJECT",
   path: "$",
   message:
-    "No validation backend configured. Choose an engine in F.3 before calling bless/validate.",
+    "Subject is not a DOM element. Provide an Element for DOM-based validation.",
   severity: "error",
 };
 
@@ -30,10 +40,22 @@ function blessValue<T extends Element>(subject: T): Blessed<T> {
 }
 
 export async function validate<T extends Element>(
-  _subject: T,
+  subject: T,
   _policy?: BlessPolicy,
 ): Promise<{ findings: FindingType[] }> {
-  return { findings: [backendMissingFinding] };
+  const root = domToSemanticNode(subject) as SemanticNodeType | null;
+  if (!root) return { findings: [invalidSubjectFinding] };
+
+  const findings: FindingType[] = [];
+  findings.push(...validateSemanticHTML(root));
+  findings.push(...validateNameRequired(root));
+  findings.push(...validateKeyboardAccessible(root));
+  findings.push(...validateARIAUsage(root));
+  findings.push(...validateTextAlternatives(root));
+  findings.push(...validateScreenReaderContent(root));
+  findings.push(...validateColorContrast(root));
+
+  return { findings: sortFindings(findings) };
 }
 
 export async function bless<T extends Element>(
