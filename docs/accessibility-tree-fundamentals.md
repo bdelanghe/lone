@@ -608,6 +608,34 @@ const findings = validateKeyboardAccessible(node);
 - Requires Escape to exit declared focus traps or modals
 - Ensures custom widgets support activation/arrow keys
 
+### Text Alternatives Validator
+
+The text alternatives validator checks non-text content for required labels and
+fallbacks. It relies on `SemanticNode` props to identify where text alternatives
+are supplied.
+
+```typescript
+import { validateTextAlternatives } from "../src/validate/text_alternatives.ts";
+
+const findings = validateTextAlternatives(node);
+```
+
+**Supported props**
+- `alt`: image alternative text
+- `decorative`: boolean for decorative imagery
+- `aria-label` / `aria-labelledby`: accessible labels
+- `title` / `desc`: SVG title/description
+- `captions` / `transcript`: media alternatives
+- `iconOnly`: boolean for icon-only controls
+- `fallbackText`: fallback content for `canvas`/`iframe`
+
+**Behavior highlights**
+- Images require non-empty `alt` unless decorative
+- SVGs require a title/desc or ARIA label
+- Audio/video require captions or transcripts
+- Icon-only controls must provide an accessible label
+- Canvas/iframe must include fallback content
+
 ---
 
 ## References
