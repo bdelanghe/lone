@@ -11,7 +11,8 @@ LONE_<DOMAIN>_<RULE>
 Rules:
 
 - `LONE` is the required project prefix.
-- `<DOMAIN>` groups related checks (e.g. `SEMANTIC`, `ARIA`, `TEXT`, `KEYBOARD`, `COLOR`, `SR`, `NAME`).
+- `<DOMAIN>` groups related checks (e.g. `SEMANTIC`, `ARIA`, `TEXT`, `KEYBOARD`,
+  `COLOR`, `SR`, `NAME`).
 - `<RULE>` is a short, uppercase identifier describing the violation.
 - Only uppercase letters, digits, and underscores are allowed.
 

@@ -14,8 +14,8 @@ export function validateTextAlternatives(
     if (isImageNode(node)) {
       const altProvided = Object.prototype.hasOwnProperty.call(props, "alt");
       const alt = getStringProp(props, "alt");
-      const isDecorative =
-        props.decorative === true || role === "presentation" || role === "none";
+      const isDecorative = props.decorative === true ||
+        role === "presentation" || role === "none";
 
       if (!altProvided && !isDecorative) {
         findings.push({
@@ -50,7 +50,8 @@ export function validateTextAlternatives(
         findings.push({
           code: "LONE_TEXT_MISSING_MEDIA_ALT",
           path: currentPath,
-          message: "Audio and video elements must provide captions or transcripts.",
+          message:
+            "Audio and video elements must provide captions or transcripts.",
           severity: "error",
         });
       }
@@ -96,7 +97,8 @@ function isIconOnlyControl(
   if (props.iconOnly !== true) {
     return false;
   }
-  return node.type === "button" || node.role === "button" || node.role === "link";
+  return node.type === "button" || node.role === "button" ||
+    node.role === "link";
 }
 
 function hasAccessibleLabel(

@@ -45,7 +45,8 @@ Checks to confirm:
 
 - No duplicate IDs in `bd ready --json`
 - Database/schema and fingerprint pass in `bd doctor`
-- Daemon warnings are gone (or explicitly run with `--no-daemon` in daemon-hostile environments)
+- Daemon warnings are gone (or explicitly run with `--no-daemon` in
+  daemon-hostile environments)
 
 ## 4) Worktree Notes
 

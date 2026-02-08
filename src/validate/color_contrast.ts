@@ -29,8 +29,9 @@ export function validateColorContrast(
       findings.push({
         code: "LONE_COLOR_INSUFFICIENT_CONTRAST",
         path: currentPath,
-        message:
-          `${label} contrast ratio ${ratio.toFixed(2)}:1 is below ${minRatio}:1. Increase contrast to at least ${minRatio}:1.`,
+        message: `${label} contrast ratio ${
+          ratio.toFixed(2)
+        }:1 is below ${minRatio}:1. Increase contrast to at least ${minRatio}:1.`,
         severity: "error",
       });
     }
@@ -49,8 +50,7 @@ function extractContrastTarget(node: SemanticNodeType): ContrastTarget | null {
   }
 
   const isNonText = props.nonText === true || props.contrastType === "non-text";
-  const isLargeText =
-    props.largeText === true ||
+  const isLargeText = props.largeText === true ||
     isLargeFont(props.fontSize, props.fontWeight);
 
   return {
@@ -61,7 +61,9 @@ function extractContrastTarget(node: SemanticNodeType): ContrastTarget | null {
   };
 }
 
-function requiredRatio(target: ContrastTarget): { minRatio: number; label: string } {
+function requiredRatio(
+  target: ContrastTarget,
+): { minRatio: number; label: string } {
   if (target.isNonText) {
     return { minRatio: 3, label: "Non-text" };
   }

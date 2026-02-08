@@ -1,8 +1,8 @@
 import { assertEquals } from "jsr:@std/assert";
 import {
   compareFindings,
-  sortFindings,
   type FindingType,
+  sortFindings,
 } from "../../src/contracts/finding.ts";
 
 Deno.test("compareFindings - stable and total ordering", () => {

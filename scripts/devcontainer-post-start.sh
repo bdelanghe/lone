@@ -27,5 +27,9 @@ if [ -n "${GIT_AUTHOR_EMAIL:-}" ]; then
   git config --global user.email "$GIT_AUTHOR_EMAIL"
 fi
 
+# Git ergonomics
+# Automatically set upstream (origin/<branch>) on first push for branches without tracking.
+git config --global push.autoSetupRemote true
+
 # Beads UI
 bdui start --host 0.0.0.0 --port 3000 >> "$XDG_CACHE_HOME/bdui.log" 2>&1

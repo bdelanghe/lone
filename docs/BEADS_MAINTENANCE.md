@@ -48,12 +48,12 @@ bd close <epic-id> --reason "All children closed."
 Priority should reflect dependency order — epics that block other epics belong
 at a higher priority. General rules for this project:
 
-| Priority | When to use |
-|----------|-------------|
-| P0 | Blocks all other work (identity, core API, dev tooling) |
-| P1 | Core deliverables that depend on P0 being stable |
-| P2 | Important but secondary — depends on P1 |
-| P3 | Backlog / future enhancements |
+| Priority | When to use                                             |
+| -------- | ------------------------------------------------------- |
+| P0       | Blocks all other work (identity, core API, dev tooling) |
+| P1       | Core deliverables that depend on P0 being stable        |
+| P2       | Important but secondary — depends on P1                 |
+| P3       | Backlog / future enhancements                           |
 
 ```bash
 bd update <epic-id> --priority=0   # P0: critical
@@ -79,7 +79,7 @@ git push
 
 ## 5. Update the roadmap
 
-After priority changes, refresh `docs/ROADMAP.md` to reflect the new order.
-The roadmap is the human-readable view of the priority graph — keep it in sync.
+After priority changes, refresh `docs/ROADMAP.md` to reflect the new order. The
+roadmap is the human-readable view of the priority graph — keep it in sync.
 
 See: `docs/ROADMAP.md`

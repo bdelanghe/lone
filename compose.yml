@@ -13,6 +13,8 @@ services:
       - .:/workspace
       # Needed for git worktrees: the .git file inside the worktree points to this host path.
       - ${BARE_REPO:?Set BARE_REPO (e.g. in .env)}:${BARE_REPO:?Set BARE_REPO (e.g. in .env)}
+      # Also mount the same bare repo at a container-native path for convenience.
+      - ${BARE_REPO:?Set BARE_REPO (e.g. in .env)}:/git-bare
       # Persist Claude Code state (including any ~/.claude.json it creates) inside a named volume.
       # Avoids host bind-mounts and prevents macOS-only absolute symlinks from breaking in Linux.
       - vscode-home:/home/vscode
@@ -21,6 +23,8 @@ services:
       - "3000:3000"
     environment:
       - IN_DEV_CONTAINER=1
+      # Present a container-native path even though git itself uses the absolute path referenced by /workspace/.git.
+      - BARE_REPO=/git-bare
       # XDG base dirs (keep tool state under ~/.config, ~/.local/share, ~/.local/state, ~/.cache)
       - XDG_CACHE_HOME=/home/vscode/.cache
       - XDG_CONFIG_HOME=/home/vscode/.config
@@ -34,6 +38,11 @@ services:
       - BEADS_DIR=/beads
       # beads-ui (bdui) prefers BEADS_DB for selecting the SQLite DB.
       - BEADS_DB=/beads/beads.db
+      # Git identity (used for commits inside the container)
+      - GIT_AUTHOR_NAME=${GIT_AUTHOR_NAME:-}
+      - GIT_AUTHOR_EMAIL=${GIT_AUTHOR_EMAIL:-}
+      - GIT_COMMITTER_NAME=${GIT_AUTHOR_NAME:-}
+      - GIT_COMMITTER_EMAIL=${GIT_AUTHOR_EMAIL:-}
 
 volumes:
   vscode-home: {}

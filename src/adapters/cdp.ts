@@ -161,20 +161,14 @@ export function cdpToSemanticNode(
    */
   function convertNode(axNode: AXNodeType): SemanticNodeType {
     // Extract role from AXValue
-    const role = axNode.role?.value
-      ? String(axNode.role.value)
-      : undefined;
+    const role = axNode.role?.value ? String(axNode.role.value) : undefined;
 
     // Extract name from AXValue
-    const name = axNode.name?.value
-      ? String(axNode.name.value)
-      : undefined;
+    const name = axNode.name?.value ? String(axNode.name.value) : undefined;
 
     // Build type from role or chrome role
     const type = role ||
-      (axNode.chromeRole?.value
-        ? String(axNode.chromeRole.value)
-        : "unknown");
+      (axNode.chromeRole?.value ? String(axNode.chromeRole.value) : "unknown");
 
     // Convert child nodes
     const children: SemanticNodeType[] = [];

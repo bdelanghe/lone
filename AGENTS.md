@@ -15,8 +15,8 @@ bd sync               # Sync with git
 
 ## Claim Before Work
 
-Always claim an issue before starting implementation work.
-Always assign issues to yourself when you start work (`--claim` does this atomically).
+Always claim an issue before starting implementation work. Always assign issues
+to yourself when you start work (`--claim` does this atomically).
 
 ```bash
 # Find ready work (no blockers, not already claimed)
@@ -55,7 +55,8 @@ bd list --spec "docs/specs/" --json
 Special states:
 
 - `tombstone`: deleted-issue marker used for anti-resurrection sync safety
-- `pinned`: persistent issue flag (not a status), typically used for anchors/hooks and long-lived control items
+- `pinned`: persistent issue flag (not a status), typically used for
+  anchors/hooks and long-lived control items
 
 ## Priorities
 
@@ -103,8 +104,8 @@ bd close <id> --reason "Implemented and tested" --json
 
 ## Contract Specs (`spec_id`)
 
-For long-lived contracts, always attach a stable spec reference with `--spec-id`.
-Use quoted titles/descriptions in commands.
+For long-lived contracts, always attach a stable spec reference with
+`--spec-id`. Use quoted titles/descriptions in commands.
 
 ```bash
 # Basic creation
@@ -136,7 +137,8 @@ bd create "Fix login" -t bug -p 1 --external-ref "gh-123" --json
 
 ## Issue State
 
-Use state dimensions for long-lived operational context (for example: patrol, mode, health).
+Use state dimensions for long-lived operational context (for example: patrol,
+mode, health).
 
 Common dimensions:
 
@@ -202,7 +204,8 @@ bd duplicates --auto-merge
 bd duplicate <source-id> --of <target-id> --json
 ```
 
-`bd merge` is a git merge-driver for JSONL conflicts, not duplicate consolidation.
+`bd merge` is a git merge-driver for JSONL conflicts, not duplicate
+consolidation.
 
 ## Compaction & Restore
 
@@ -330,11 +333,13 @@ Local quick note:
 - `docs/BEADS_ARCHITECTURE_NOTES.md`
 - `docs/BEADS_CLI_QUICK_NOTES.md`
 - `docs/MOLECULES.md`
-- `docs/BEADS_MAINTENANCE.md` — orphan cleanup, epic closure, priority rebalancing
+- `docs/BEADS_MAINTENANCE.md` — orphan cleanup, epic closure, priority
+  rebalancing
 
 ## Beads Recovery
 
-If `bd` fails with SQLite schema/version errors (for example, `no such column:
+If `bd` fails with SQLite schema/version errors (for example,
+`no such column:
 i.spec_id` or `Unable to read database version`), run:
 
 ```bash
@@ -414,8 +419,8 @@ direnv allow
 
 ### Cache Persistence
 
-Deno and npm caches use a named Docker volume (`xdg-cache`). No host-side
-cache directory needed. To reset: `docker volume rm lone_xdg-cache`
+Deno and npm caches use a named Docker volume (`xdg-cache`). No host-side cache
+directory needed. To reset: `docker volume rm lone_xdg-cache`
 
 ## Landing the Plane (Session Completion)
 

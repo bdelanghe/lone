@@ -101,8 +101,7 @@ devcontainer exec --workspace-folder . deno test -A --fail-fast tests/validate/k
 devcontainer exec --workspace-folder . deno task ci
 ```
 
-Optional via Deno task:
-`bdui` serves the UI at `http://127.0.0.1:3000`.
+Optional via Deno task: `bdui` serves the UI at `http://127.0.0.1:3000`.
 
 ## Pre-PR Quick Checks
 
@@ -122,7 +121,9 @@ git -c credential.helper='!gh auth git-credential' \
 
 This avoids modifying global git config and works in docker-only setups.
 
-Container home/state (including Deno/npm caches and Claude Code state) is stored in a named Docker volume (`vscode-home`) so it persists across container recreation.
+Container home/state (including Deno/npm caches and Claude Code state) is stored
+in a named Docker volume (`vscode-home`) so it persists across container
+recreation.
 
 ## Status
 
@@ -144,6 +145,6 @@ worktree-new "short task summary"
 ./scripts/worktree-new "short task summary"
 ```
 
-This helper also enforces Beads defaults for linked worktrees
-(`no-daemon=true`, `auto-start-daemon=false`, `sync.branch=beads-sync`) and
-runs `bd` health checks.
+This helper also enforces Beads defaults for linked worktrees (`no-daemon=true`,
+`auto-start-daemon=false`, `sync.branch=beads-sync`) and runs `bd` health
+checks.

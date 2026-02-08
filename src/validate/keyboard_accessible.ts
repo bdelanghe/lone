@@ -241,8 +241,9 @@ function validateKeyboardHandlers(
         findings.push({
           code: "LONE_KEYBOARD_MISSING_KEYBOARD_HANDLER",
           path: currentPath,
-          message:
-            `Missing keyboard activation keys: ${missing.join(", ")}. Add handlers for these keys.`,
+          message: `Missing keyboard activation keys: ${
+            missing.join(", ")
+          }. Add handlers for these keys.`,
           severity: "error",
         });
       }
@@ -263,8 +264,7 @@ function validateKeyboardHandlers(
     }
 
     if (WIDGET_ROLES.has(role)) {
-      const hasArrow =
-        handlers.has("arrowup") ||
+      const hasArrow = handlers.has("arrowup") ||
         handlers.has("arrowdown") ||
         handlers.has("arrowleft") ||
         handlers.has("arrowright");
