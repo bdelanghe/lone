@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "exports": "./src/mod.ts",
   "imports": {
-    "zod": "npm:zod@3"
+    "zod": "npm:zod@3",
+    "linkedom": "npm:linkedom@0.15.3"
   },
   "tasks": {
     "test": "deno test -A --fail-fast tests",
