@@ -7,16 +7,10 @@ services:
     working_dir: /workspace
     stdin_open: true
     tty: true
+    env_file:
+      - .env
     volumes:
       - .:/workspace
-      # Forward host SSH agent for git auth.
-      #
-      # This is populated by .envrc -> .env generation. Defaults to Docker Desktop's
-      # /run/host-services/ssh-auth.sock when no host SSH_AUTH_SOCK is present.
-      - ${DEVCONTAINER_SSH_AUTH_SOCK:-/run/host-services/ssh-auth.sock}:/ssh-agent:ro
-      # Mount host gh config (contains auth) into a staging directory.
-      # The postStartCommand copies it into the container home so permissions are sane.
-      - ${GH_CONFIG_DIR:?Set GH_CONFIG_DIR (e.g. in .env)}:/mnt/gh-config:ro
       # Needed for git worktrees: the .git file inside the worktree points to this host path.
       - ${BARE_REPO:?Set BARE_REPO (e.g. in .env)}:${BARE_REPO:?Set BARE_REPO (e.g. in .env)}
       # Persist Claude Code state (including any ~/.claude.json it creates) inside a named volume.
@@ -27,20 +21,19 @@ services:
       - "3000:3000"
     environment:
       - IN_DEV_CONTAINER=1
+      # XDG base dirs (keep tool state under ~/.config, ~/.local/share, ~/.local/state, ~/.cache)
       - XDG_CACHE_HOME=/home/vscode/.cache
+      - XDG_CONFIG_HOME=/home/vscode/.config
+      - XDG_DATA_HOME=/home/vscode/.local/share
+      - XDG_STATE_HOME=/home/vscode/.local/state
       - DENO_DIR=/home/vscode/.cache/deno
       - NPM_CONFIG_CACHE=/home/vscode/.cache/npm
-      # SSH agent socket forwarded via /ssh-agent volume mount.
-      - SSH_AUTH_SOCK=/ssh-agent
+      # gh uses $BROWSER for -w/--web flows; set it to a no-op so we don't error in headless containers.
+      - BROWSER=true
       # Do not pass ANTHROPIC_API_KEY by default; Claude warns when both it and a claude.ai token are present.
       - BEADS_DIR=/beads
       # beads-ui (bdui) prefers BEADS_DB for selecting the SQLite DB.
       - BEADS_DB=/beads/beads.db
-      # Git identity (used for commits inside the container)
-      - GIT_AUTHOR_NAME=${GIT_AUTHOR_NAME:-}
-      - GIT_AUTHOR_EMAIL=${GIT_AUTHOR_EMAIL:-}
-      - GIT_COMMITTER_NAME=${GIT_AUTHOR_NAME:-}
-      - GIT_COMMITTER_EMAIL=${GIT_AUTHOR_EMAIL:-}
 
 volumes:
   vscode-home: {}

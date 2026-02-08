@@ -47,5 +47,17 @@ RUN npm install -g @openai/codex
 # Trust the bind-mounted workspace (host UID may differ from container user)
 RUN git config --system --add safe.directory /workspace
 
+# Convenience: allow running repo scripts without extra PATH manipulation.
+# (Workspace is bind-mounted at runtime.)
+ENV PATH="/workspace/scripts:${PATH}"
+
+# Git-over-HTTPS auth via gh (works well in containers; avoids SSH agent forwarding brittleness)
+#
+# Fail-closed for identity: require user.name/user.email to be configured (we set them from env at startup).
+RUN git config --system user.useConfigOnly true \
+  && git config --system credential.helper "!gh auth git-credential" \
+  && git config --system --add url."https://github.com/".insteadOf "git@github.com:" \
+  && git config --system --add url."https://github.com/".insteadOf "ssh://git@github.com/"
+
 # Beads UI
 RUN npm install -g beads-ui
