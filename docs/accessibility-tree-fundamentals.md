@@ -581,6 +581,33 @@ function validateButtonNames(node: SemanticNodeType): Finding[] {
 }
 ```
 
+### Keyboard Accessibility Validator
+
+The keyboard validator uses `SemanticNode` props to reason about focus order and
+keyboard interaction. It assumes native controls (`button`, `a`, `input`, etc.)
+provide built-in keyboard behavior, and only enforces keyboard handlers for
+custom widgets and roles.
+
+```typescript
+import { validateKeyboardAccessible } from "../src/validate/keyboard_accessible.ts";
+
+const findings = validateKeyboardAccessible(node);
+```
+
+**Supported props**
+- `tabIndex` / `tabindex`: explicit tab order and focusability
+- `focusVisible`: boolean flag for visible focus ring
+- `keyboardHandlers`: array or comma-separated string of supported keys
+- `keyboardTrap` / `focusTrap`: boolean flag indicating a focus trap
+- `escapeCloses`: boolean flag indicating Escape exits a trap or modal
+- `focusable`: explicit focusability override
+
+**Behavior highlights**
+- Flags interactive elements that are not focusable
+- Warns on positive `tabIndex` order regressions
+- Requires Escape to exit declared focus traps or modals
+- Ensures custom widgets support activation/arrow keys
+
 ---
 
 ## References
