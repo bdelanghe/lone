@@ -74,6 +74,18 @@ Optional via Deno task:
 deno task test:docker
 ```
 
+## Git Push In Restricted Environments
+
+If SSH pushes hang and you cannot write to global git config, use the GitHub CLI
+credential helper directly with HTTPS:
+
+```bash
+git -c credential.helper='!gh auth git-credential' \
+  push https://github.com/bdelanghe/lone.git HEAD:your-branch
+```
+
+This avoids modifying global git config and works in docker-only setups.
+
 Container cache directories are mounted through `.xdg/` for repeatable and fast
 local runs.
 
