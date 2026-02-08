@@ -9,6 +9,7 @@
     "test": "deno test -A --fail-fast tests",
     "test:docker": "./scripts/test",
     "test:watch": "deno test -A --watch tests",
+    "bench": "deno bench -A tests/bench",
     "fmt": "deno fmt",
     "lint": "deno lint",
     "check": "deno check **/*.ts",
