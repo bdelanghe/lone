@@ -26,6 +26,15 @@ if [ -n "${BEADS_DIR:-}" ] && [ -d "${BEADS_DIR}" ]; then
   BEADS_MOUNT_ARGS=(-v "${BEADS_DIR}:${BEADS_DIR}" -e "BEADS_DIR=${BEADS_DIR}")
 fi
 
+# Mount ~/.claude config and forward API key for Claude Code inside container
+CLAUDE_MOUNT_ARGS=()
+if [ -d "${HOME}/.claude" ]; then
+  CLAUDE_MOUNT_ARGS=(-v "${HOME}/.claude:${HOME}/.claude")
+fi
+if [ -n "${ANTHROPIC_API_KEY:-}" ]; then
+  CLAUDE_MOUNT_ARGS+=(-e "ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}")
+fi
+
 mkdir -p .xdg/cache
 
 exec docker run --rm -it \
@@ -33,6 +42,7 @@ exec docker run --rm -it \
   -v "${BARE_REPO}:${BARE_REPO}" \
   -v "$(pwd)/.xdg/cache:/xdg/cache" \
   "${BEADS_MOUNT_ARGS[@]}" \
+  "${CLAUDE_MOUNT_ARGS[@]}" \
   -e IN_DEV_CONTAINER=1 \
   -e XDG_CACHE_HOME=/xdg/cache \
   -e DENO_DIR=/xdg/cache/deno \
