@@ -9,6 +9,14 @@ services:
     tty: true
     volumes:
       - .:/workspace
+      # Forward host SSH agent for git auth.
+      #
+      # This is populated by .envrc -> .env generation. Defaults to Docker Desktop's
+      # /run/host-services/ssh-auth.sock when no host SSH_AUTH_SOCK is present.
+      - ${DEVCONTAINER_SSH_AUTH_SOCK:-/run/host-services/ssh-auth.sock}:/ssh-agent:ro
+      # Mount host gh config (contains auth) into a staging directory.
+      # The postStartCommand copies it into the container home so permissions are sane.
+      - ${GH_CONFIG_DIR:?Set GH_CONFIG_DIR (e.g. in .env)}:/mnt/gh-config:ro
       # Needed for git worktrees: the .git file inside the worktree points to this host path.
       - ${BARE_REPO:?Set BARE_REPO (e.g. in .env)}:${BARE_REPO:?Set BARE_REPO (e.g. in .env)}
       # Persist Claude Code state (including any ~/.claude.json it creates) inside a named volume.
@@ -22,6 +30,8 @@ services:
       - XDG_CACHE_HOME=/home/vscode/.cache
       - DENO_DIR=/home/vscode/.cache/deno
       - NPM_CONFIG_CACHE=/home/vscode/.cache/npm
+      # SSH agent socket forwarded via /ssh-agent volume mount.
+      - SSH_AUTH_SOCK=/ssh-agent
       # Do not pass ANTHROPIC_API_KEY by default; Claude warns when both it and a claude.ai token are present.
       - BEADS_DIR=/beads
       # beads-ui (bdui) prefers BEADS_DB for selecting the SQLite DB.
