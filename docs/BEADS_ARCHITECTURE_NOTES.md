@@ -11,10 +11,12 @@ Source: https://github.com/steveyegge/beads/blob/main/docs/ARCHITECTURE.md
 
 ## Practical Implications
 
-- Prefer querying via local SQLite for speed; trust `bd sync` to bridge to JSONL.
+- Prefer querying via local SQLite for speed; trust `bd sync` to bridge to
+  JSONL.
 - If daemon is unavailable, CLI should fall back to direct DB mode.
 - Sync correctness depends on JSONL import/export metadata and timestamps.
-- Worktree setups can differ; verify with `bd where`, `bd worktree info`, and `bd doctor`.
+- Worktree setups can differ; verify with `bd where`, `bd worktree info`, and
+  `bd doctor`.
 
 ## Recovery Priorities
 
@@ -30,4 +32,5 @@ Source: https://github.com/steveyegge/beads/blob/main/docs/ARCHITECTURE.md
 
 - One daemon per workspace.
 - Socket/daemon issues should not block work: use `--no-daemon` temporarily.
-- If daemon startup fails, check upstream config, sync mode, and `bd doctor` warnings before manual DB changes.
+- If daemon startup fails, check upstream config, sync mode, and `bd doctor`
+  warnings before manual DB changes.

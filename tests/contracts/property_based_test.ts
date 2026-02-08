@@ -93,9 +93,7 @@ const maxRuns = 200;
 
 const tagArb = fc
   .string({ minLength: 1, maxLength: 20 })
-  .filter((tag) =>
-    tagRegex.test(tag) && tag !== "script" && tag !== "iframe"
-  );
+  .filter((tag) => tagRegex.test(tag) && tag !== "script" && tag !== "iframe");
 const attrNameArb = fc
   .string({ minLength: 1, maxLength: 20 })
   .filter((name) =>

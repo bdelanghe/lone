@@ -68,8 +68,9 @@ function validateHeadingHierarchy(
       findings.push({
         code: "LONE_SEMANTIC_HEADING_LEVEL_SKIP",
         path: curr.path,
-        message:
-          `Heading level ${curr.level} skips level ${prev.level + 1}. Use h${prev.level + 1} before h${curr.level}.`,
+        message: `Heading level ${curr.level} skips level ${
+          prev.level + 1
+        }. Use h${prev.level + 1} before h${curr.level}.`,
         severity: "error",
       });
     }

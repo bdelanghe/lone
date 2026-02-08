@@ -67,7 +67,8 @@ Local quick note:
 
 ## Beads Recovery
 
-If `bd` fails with SQLite schema/version errors (for example, `no such column:
+If `bd` fails with SQLite schema/version errors (for example,
+`no such column:
 i.spec_id` or `Unable to read database version`), run:
 
 ```bash

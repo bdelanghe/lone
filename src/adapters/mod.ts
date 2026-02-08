@@ -1,3 +1,3 @@
 // Adapter exports
-export { AXNode, cdpToSemanticNode, type AXNodeType } from "./cdp.ts";
+export { AXNode, type AXNodeType, cdpToSemanticNode } from "./cdp.ts";
 export { domToSemanticNode, type ElementLike } from "./dom.ts";

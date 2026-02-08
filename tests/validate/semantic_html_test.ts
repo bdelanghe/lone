@@ -66,7 +66,9 @@ Deno.test("validateSemanticHTML - flags heading level skip (h1 -> h3)", () => {
   };
 
   const findings = validateSemanticHTML(node);
-  const headingSkip = findings.find((f) => f.code === "LONE_SEMANTIC_HEADING_LEVEL_SKIP");
+  const headingSkip = findings.find((f) =>
+    f.code === "LONE_SEMANTIC_HEADING_LEVEL_SKIP"
+  );
 
   assertEquals(headingSkip !== undefined, true);
   assertEquals(
@@ -112,7 +114,9 @@ Deno.test("validateSemanticHTML - allows jumping back to lower levels (h3 -> h2)
   };
 
   const findings = validateSemanticHTML(node);
-  const headingSkip = findings.find((f) => f.code === "LONE_SEMANTIC_HEADING_LEVEL_SKIP");
+  const headingSkip = findings.find((f) =>
+    f.code === "LONE_SEMANTIC_HEADING_LEVEL_SKIP"
+  );
 
   assertEquals(headingSkip, undefined);
 });
@@ -161,7 +165,7 @@ Deno.test("validateSemanticHTML - valid button (no href)", () => {
   const findings = validateSemanticHTML(node);
   const buttonLinkFindings = findings.filter((f) =>
     f.code.startsWith("LONE_SEMANTIC_BUTTON_") ||
-      f.code.startsWith("LONE_SEMANTIC_LINK_")
+    f.code.startsWith("LONE_SEMANTIC_LINK_")
   );
 
   assertEquals(buttonLinkFindings.length, 0);
@@ -178,7 +182,7 @@ Deno.test("validateSemanticHTML - valid link (has href, no onclick)", () => {
   const findings = validateSemanticHTML(node);
   const buttonLinkFindings = findings.filter((f) =>
     f.code.startsWith("LONE_SEMANTIC_BUTTON_") ||
-      f.code.startsWith("LONE_SEMANTIC_LINK_")
+    f.code.startsWith("LONE_SEMANTIC_LINK_")
   );
 
   assertEquals(buttonLinkFindings.length, 0);
@@ -193,7 +197,9 @@ Deno.test("validateSemanticHTML - flags link with onclick", () => {
   };
 
   const findings = validateSemanticHTML(node);
-  const linkOnclick = findings.find((f) => f.code === "LONE_SEMANTIC_LINK_WITH_ONCLICK");
+  const linkOnclick = findings.find((f) =>
+    f.code === "LONE_SEMANTIC_LINK_WITH_ONCLICK"
+  );
 
   assertEquals(linkOnclick !== undefined, true);
   assertEquals(
@@ -211,7 +217,9 @@ Deno.test("validateSemanticHTML - flags link without href", () => {
   };
 
   const findings = validateSemanticHTML(node);
-  const linkNoHref = findings.find((f) => f.code === "LONE_SEMANTIC_LINK_WITHOUT_HREF");
+  const linkNoHref = findings.find((f) =>
+    f.code === "LONE_SEMANTIC_LINK_WITHOUT_HREF"
+  );
 
   assertEquals(linkNoHref !== undefined, true);
   assertEquals(
@@ -229,7 +237,9 @@ Deno.test("validateSemanticHTML - flags button with href", () => {
   };
 
   const findings = validateSemanticHTML(node);
-  const buttonHref = findings.find((f) => f.code === "LONE_SEMANTIC_BUTTON_WITH_HREF");
+  const buttonHref = findings.find((f) =>
+    f.code === "LONE_SEMANTIC_BUTTON_WITH_HREF"
+  );
 
   assertEquals(buttonHref !== undefined, true);
   assertEquals(
@@ -266,7 +276,9 @@ Deno.test("validateSemanticHTML - valid list structure (ul > li)", () => {
   };
 
   const findings = validateSemanticHTML(node);
-  const listFindings = findings.filter((f) => f.code === "LONE_SEMANTIC_INVALID_LIST_CHILD");
+  const listFindings = findings.filter((f) =>
+    f.code === "LONE_SEMANTIC_INVALID_LIST_CHILD"
+  );
 
   assertEquals(listFindings.length, 0);
 });
@@ -294,7 +306,9 @@ Deno.test("validateSemanticHTML - flags invalid list child (ul > div)", () => {
   };
 
   const findings = validateSemanticHTML(node);
-  const invalidChild = findings.find((f) => f.code === "LONE_SEMANTIC_INVALID_LIST_CHILD");
+  const invalidChild = findings.find((f) =>
+    f.code === "LONE_SEMANTIC_INVALID_LIST_CHILD"
+  );
 
   assertEquals(invalidChild !== undefined, true);
   assertEquals(
@@ -321,7 +335,9 @@ Deno.test("validateSemanticHTML - accepts role='listitem' as valid", () => {
   };
 
   const findings = validateSemanticHTML(node);
-  const listFindings = findings.filter((f) => f.code === "LONE_SEMANTIC_INVALID_LIST_CHILD");
+  const listFindings = findings.filter((f) =>
+    f.code === "LONE_SEMANTIC_INVALID_LIST_CHILD"
+  );
 
   assertEquals(listFindings.length, 0);
 });
@@ -433,7 +449,9 @@ Deno.test("validateSemanticHTML - warns about th without scope", () => {
   };
 
   const findings = validateSemanticHTML(node);
-  const thScope = findings.find((f) => f.code === "LONE_SEMANTIC_TH_MISSING_SCOPE");
+  const thScope = findings.find((f) =>
+    f.code === "LONE_SEMANTIC_TH_MISSING_SCOPE"
+  );
 
   assertEquals(thScope !== undefined, true);
   assertEquals(thScope?.severity, "warning");
@@ -477,7 +495,13 @@ Deno.test("validateSemanticHTML - warns about missing header cells", () => {
             role: "row",
             props: {},
             children: [
-              { type: "td", role: "cell", name: "Data", props: {}, children: [] },
+              {
+                type: "td",
+                role: "cell",
+                name: "Data",
+                props: {},
+                children: [],
+              },
             ],
           },
         ],
@@ -568,7 +592,9 @@ Deno.test("validateSemanticHTML - flags unlabeled form input", () => {
   };
 
   const findings = validateSemanticHTML(node);
-  const unlabeled = findings.find((f) => f.code === "LONE_SEMANTIC_FORM_CONTROL_UNLABELED");
+  const unlabeled = findings.find((f) =>
+    f.code === "LONE_SEMANTIC_FORM_CONTROL_UNLABELED"
+  );
 
   assertEquals(unlabeled !== undefined, true);
   assertEquals(
@@ -586,7 +612,9 @@ Deno.test("validateSemanticHTML - flags select without label", () => {
   };
 
   const findings = validateSemanticHTML(node);
-  const unlabeled = findings.find((f) => f.code === "LONE_SEMANTIC_FORM_CONTROL_UNLABELED");
+  const unlabeled = findings.find((f) =>
+    f.code === "LONE_SEMANTIC_FORM_CONTROL_UNLABELED"
+  );
 
   assertEquals(unlabeled !== undefined, true);
 });
@@ -600,7 +628,9 @@ Deno.test("validateSemanticHTML - flags textarea without label", () => {
   };
 
   const findings = validateSemanticHTML(node);
-  const unlabeled = findings.find((f) => f.code === "LONE_SEMANTIC_FORM_CONTROL_UNLABELED");
+  const unlabeled = findings.find((f) =>
+    f.code === "LONE_SEMANTIC_FORM_CONTROL_UNLABELED"
+  );
 
   assertEquals(unlabeled !== undefined, true);
 });
@@ -659,11 +689,21 @@ Deno.test("validateSemanticHTML - complex document with multiple issues", () => 
   const findings = validateSemanticHTML(node);
 
   // Should catch all 5 issues
-  const headingSkip = findings.find((f) => f.code === "LONE_SEMANTIC_HEADING_LEVEL_SKIP");
-  const linkOnclick = findings.find((f) => f.code === "LONE_SEMANTIC_LINK_WITH_ONCLICK");
-  const linkNoHref = findings.find((f) => f.code === "LONE_SEMANTIC_LINK_WITHOUT_HREF");
-  const invalidList = findings.find((f) => f.code === "LONE_SEMANTIC_INVALID_LIST_CHILD");
-  const unlabeled = findings.find((f) => f.code === "LONE_SEMANTIC_FORM_CONTROL_UNLABELED");
+  const headingSkip = findings.find((f) =>
+    f.code === "LONE_SEMANTIC_HEADING_LEVEL_SKIP"
+  );
+  const linkOnclick = findings.find((f) =>
+    f.code === "LONE_SEMANTIC_LINK_WITH_ONCLICK"
+  );
+  const linkNoHref = findings.find((f) =>
+    f.code === "LONE_SEMANTIC_LINK_WITHOUT_HREF"
+  );
+  const invalidList = findings.find((f) =>
+    f.code === "LONE_SEMANTIC_INVALID_LIST_CHILD"
+  );
+  const unlabeled = findings.find((f) =>
+    f.code === "LONE_SEMANTIC_FORM_CONTROL_UNLABELED"
+  );
 
   assertEquals(headingSkip !== undefined, true);
   assertEquals(linkOnclick !== undefined, true);
