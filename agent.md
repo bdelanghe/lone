@@ -13,6 +13,24 @@ bd close <id>         # Complete work
 bd sync               # Sync with git
 ```
 
+## Focus And Scope (POC First)
+
+The current priority is a focused proof-of-concept. Do not add scope until the
+POC is shipped.
+
+Primary execution queue:
+
+1. `F.1` Finding schema + deterministic ordering + code namespace rules
+2. `F.2` bless() + Blessed<T>
+3. `F.3` One backend (axe-core in JSDOM OR DOM-only extraction)
+4. `F.4` MDN fixture runner (2 good + 2 bad)
+
+Rules:
+
+- If work is not on this queue, defer it.
+- Avoid new epics or infrastructure work unless it blocks the queue.
+- Keep priorities strict: infra is not P0 unless it blocks the POC.
+
 ## Companion Tools
 
 Use these in addition to `bd` when useful:

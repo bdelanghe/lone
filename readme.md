@@ -1,52 +1,88 @@
-# Lone - Semantic Page Elements
+# Lone - Semantic Blessing Engine
 
-Lone builds real web pages from semantic parts using typed custom HTML
-elements.
-
-The goal is simple: compose pages with custom elements while preserving the
-meaningful structure that assistive technology relies on.
+Lone is a semantic blessing engine for DOM subtrees. It turns untrusted element
+trees into `Blessed<T>` or structured `Finding[]`, delegating most rule coverage
+to existing tools while enforcing a stable contract boundary for downstream UI
+frameworks.
 
 ## What Lone Is
 
-- A small library of custom elements (Web Components) that wrap native HTML.
-- A contract + validator layer that checks page structure.
-- A TDD-first workflow: contracts first, implementation second.
+- A small library that validates DOM subtrees and returns deterministic
+  `Finding[]` or a branded `Blessed<T>`.
+- A contract boundary for semantic safety (think SafeHtml for DOM).
+- A TDD-first, contract-first workflow: schema, tests, minimal implementation.
 
-Lone is not a design system and not a CSS framework. It is a semantic
-construction kit.
+## What Lone Is Not
 
-## Core Idea
+- Not a design system or CSS framework.
+- Not a re-implementation of axe-core or WCAG coverage.
+- Not a requirement for custom elements or DOM mutation.
+- Not a universal adapter for every accessibility engine in v0.
 
-Custom elements can control composition, but they must not destroy semantics.
+## Consumer Story
 
-Rule of thumb:
+A developer has a UI system that produces DOM. They want a type-level and CI
+level guarantee that a specific subtree is semantically safe before it is
+embedded, cached, or published.
 
-- Prefer native elements inside (`button`, `a`, `input`, `nav`, `main`, etc.).
-- Custom elements act as typed wrappers + validators, not reimplementations of
-  controls.
+```ts
+const result = await lone.bless(rootEl, policy);
 
-## Contracts (Project Spine)
+if (result.ok) {
+  renderBlessed(result.value);
+  cacheBlessed(result.value);
+  publishBlessed(result.value);
+} else {
+  reportFindings(result.findings);
+}
+```
 
-Lone treats page structure as data first:
+## Minimal Public API (v0)
 
-- `SemanticNode`: a portable tree of named semantic parts.
-- `Finding`: validator output with stable `code`, `path`, and `message`.
-- `ValidatorSpec`: explicit validator contract and metadata.
+```ts
+export type BlessPolicy = {
+  profile: "mdn" | "wcag-lite" | "project";
+  allowCodes?: string[];
+  denyCodes?: string[];
+  failOn?: "error" | "warn";
+};
 
-Everything starts as:
+export type BlessResult<T extends Element> =
+  | { ok: true; value: Blessed<T>; findings: Finding[] }
+  | { ok: false; findings: Finding[] };
 
-1. Contract (`zod` schema)
-2. Failing test
-3. Minimal implementation
+export type Blessed<T extends Element> = T & { __loneBlessed: true };
+
+export async function bless<T extends Element>(
+  subject: T,
+  policy?: BlessPolicy,
+): Promise<BlessResult<T>>;
+
+export async function validate<T extends Element>(
+  subject: T,
+  policy?: BlessPolicy,
+): Promise<{ findings: Finding[] }>;
+```
+
+## POC Execution Queue
+
+The fastest path to proof-of-concept is:
+
+1. Ship `Finding` schema + deterministic ordering + code namespace rules.
+2. Ship `bless()` + branded `Blessed<T>`.
+3. Ship one backend: `axe-core` in JSDOM or DOM-only extraction (pick one).
+4. Ship MDN fixture runner with 2 good + 2 bad tests.
+
+Everything else is downstream of these four steps.
 
 ## Repository Layout
 
 ```text
-src/contracts/   # Zod contracts (source of truth)
-src/validate/    # semantic invariants and validators
-src/elements/    # custom element layer (thin/early)
-src/adapters/    # AX/CDP and other tree adapters
-tests/           # contract + validator + adapter tests
+src/contracts/   # Schema/contracts (source of truth)
+src/engine/      # Bless/validate pipeline
+src/adapters/    # Backends (axe-core, DOM extraction)
+src/validate/    # Lone-specific authoring constraint checks
+tests/           # Contract + pipeline tests
 ```
 
 ## Development
@@ -68,7 +104,7 @@ deno task ci # requires local deno or a devcontainer
 Optional via Deno task:
 `bdui` serves the UI at `http://127.0.0.1:3000`.
 
-## Pre-PR quick checks
+## Pre-PR Quick Checks
 
 ```bash
 deno task test:docker
@@ -89,23 +125,10 @@ This avoids modifying global git config and works in docker-only setups.
 Container cache directories are mounted through `.xdg/` for repeatable and fast
 local runs.
 
-## Plan (Near Term)
-
-1. Tighten core contracts and edge-case tests for `SemanticNode`,
-`ElementSpec`, `Finding`, and `ValidatorSpec`.
-2. Complete adapter parity: finish CDP coverage and add Puppeteer +
-Playwright semantic-node adapters.
-3. Build a first custom-elements semantic page example (MDN "good semantics"
-style) and validate it end-to-end with Lone validators.
-4. Implement the first typed custom element wrappers in `src/elements/`
-using the existing contracts as the source of truth.
-5. Decide long-term node typing strategy (standard DOM types vs custom
-`ElementSpec`) and document the decision.
-
 ## Status
 
-Early. Current milestone is a stable contract set and validator suite that can
-support the first real custom-element page builds.
+Focused on the POC execution queue (see above). Backlog trimming happens only
+after the POC is shipped.
 
 ## Beads / Worktrees
 
