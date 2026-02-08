@@ -122,8 +122,7 @@ git -c credential.helper='!gh auth git-credential' \
 
 This avoids modifying global git config and works in docker-only setups.
 
-Container cache directories are mounted through `.xdg/` for repeatable and fast
-local runs.
+Container home/state (including Deno/npm caches and Claude Code state) is stored in a named Docker volume (`vscode-home`) so it persists across container recreation.
 
 ## Status
 

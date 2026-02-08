@@ -9,17 +9,23 @@ services:
     tty: true
     volumes:
       - .:/workspace
-      - ${BARE_REPO:-.git}:${BARE_REPO:-.git}
-      - xdg-cache:/home/vscode/.cache
-      - ${HOME}/.claude:${HOME}/.claude
-      - ${BEADS_DIR}:${BEADS_DIR}
+      # Needed for git worktrees: the .git file inside the worktree points to this host path.
+      - ${BARE_REPO:?Set BARE_REPO (e.g. in .env)}:${BARE_REPO:?Set BARE_REPO (e.g. in .env)}
+      # Persist Claude Code state (including any ~/.claude.json it creates) inside a named volume.
+      # Avoids host bind-mounts and prevents macOS-only absolute symlinks from breaking in Linux.
+      - vscode-home:/home/vscode
+      - ${BEADS_DIR:?Set BEADS_DIR (e.g. in .env)}:/beads
+    ports:
+      - "3000:3000"
     environment:
       - IN_DEV_CONTAINER=1
       - XDG_CACHE_HOME=/home/vscode/.cache
       - DENO_DIR=/home/vscode/.cache/deno
       - NPM_CONFIG_CACHE=/home/vscode/.cache/npm
-      - ANTHROPIC_API_KEY
-      - BEADS_DIR
+      # Do not pass ANTHROPIC_API_KEY by default; Claude warns when both it and a claude.ai token are present.
+      - BEADS_DIR=/beads
+      # beads-ui (bdui) prefers BEADS_DB for selecting the SQLite DB.
+      - BEADS_DB=/beads/beads.db
 
 volumes:
-  xdg-cache:
+  vscode-home: {}

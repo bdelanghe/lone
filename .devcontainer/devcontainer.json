@@ -4,6 +4,8 @@
   "service": "dev",
   "workspaceFolder": "/workspace",
   "shutdownAction": "stopCompose",
+  "forwardPorts": [3000],
+  "postStartCommand": "bash -lc 'set -euo pipefail; mkdir -p ~/.local/bin ~/.cache; ln -sf /usr/local/bin/claude ~/.local/bin/claude; bdui start --host 0.0.0.0 --port 3000 >> ~/.cache/bdui.log 2>&1 || true'",
   "features": {},
   "customizations": {
     "vscode": {
@@ -17,6 +19,5 @@
       }
     }
   },
-  "postCreateCommand": "sudo mkdir -p /home/vscode/.cache/deno /home/vscode/.cache/npm && sudo chown -R vscode:vscode /home/vscode/.cache && deno --version && deno task test",
   "remoteUser": "vscode"
 }
