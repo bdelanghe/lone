@@ -1,146 +1,164 @@
 # Lone Roadmap
 
 This roadmap is organized by Beads epics in the canonical `lone-*` issue
-universe.
+universe. Priority ordering reflects execution dependency — P0 epics must
+reach stable state before P1 work accelerates.
 
 Source of truth:
 
 - `BEADS_DIR=/Users/bobby/.local/share/beads/io.github/bdelanghe/lone/.beads`
 - `bd show <issue-id>`
+- `bd epic status` — live completion percentages
 
-Last refreshed: 2026-02-07
+Last refreshed: 2026-02-08
 
-## Epic Index
+---
 
-| Epic | Status | Priority | Labels | Children |
-| --- | --- | --- | --- | ---: |
-| `lone-2il` | open | P3 | epic | 9 |
-| `lone-336` | closed | P1 | beads, docs, molecule | 2 |
-| `lone-a6i` | open | P3 | epic | 4 |
-| `lone-ba1` | open | P2 | epic | 1 |
-| `lone-kaz` | open | P3 | epic | 5 |
-| `lone-pjd` | open | P3 | epic | 8 |
+## Priority Order
+
+```
+P0 (critical / unblocking)
+  └─ lone-0ng  Project Identity: AX-first semantic safety layer
+  └─ lone-org  Lone Semantic Safety Engine: Contract-First Foundation
+  └─ lone-65r  Developer Tooling & Workflow Reliability
+        └─ lone-a6i  Beads reliability and workflow guardrails
+
+P1 (foundational deliverables)
+  └─ lone-pjd  Accessibility validator suite v1
+  └─ lone-mmp  Runtime Validation: Two-tier SSR + Client-side DOM validation
+
+P2 (important, depends on P0/P1)
+  └─ lone-aei  Light DOM Only: No Shadow DOM (revisit later)
+  └─ lone-kaz  Accessibility adapters and external engines
+  └─ lone-2il  Accessibility QA, docs, and hardening
+
+P3 (backlog)
+  └─ lone-5w2  AX Template Persistence: Save validated structures from engine
+```
+
+---
 
 ## Epics
 
-### `lone-2il` Accessibility QA, docs, and hardening (open)
+### P0 — `lone-0ng` Project Identity: AX-first semantic safety layer
 
-Design notes:
-Harden quality through test depth, benchmarking, and documentation that
-codifies manual accessibility checks alongside automated validation.
+> **Why P0:** Everything else depends on this being clear. The API, naming,
+> docs, and examples must consistently reflect that Lone is a validation-only
+> semantic safety layer — not a UI kit, not a DOM generator.
 
-Acceptance criteria:
-1) Performance and error-quality tasks merged with tests.
-2) Manual testing guides published under `docs/`.
-3) QA checklist is reproducible by contributors.
-4) CI/commands referenced in docs are current and executable.
+Mental model: **SafeHtml** — untrusted DOM in → `Blessed<T>` or `Finding[]` out.
 
-Spec: `docs/ROADMAP.md`
+Key deliverables:
+- SafeHtml mental model documented
+- Subject-as-child authoring pattern enforced
+- AX-role naming convention (`lone-heading`, not `lone-h1`)
+- Branded `Blessed<T>` type
+- Core engine independent of Custom Elements
+- Custom elements are validation-only (no behavior, no DOM mutation)
 
-Child issues:
+`bd show lone-0ng` for full details.
 
-- `lone-3z5` [open] task: Doc: JavaScript-disabled testing guide
-- `lone-4e9` [open] task: Example: recreate MDN good-semantics.html with our elements
-- `lone-7xv` [open] task: Doc: Screen reader testing guide
-- `lone-adu` [open] task: Doc: CSS-off content testing guide
-- `lone-ba1` [open] epic: Create MDN accessibility testing checklist doc and automated tests
-- `lone-bbf` [open] task: Add validation error message quality tests
-- `lone-n4c` [open] task: Doc: Accessibility statement template
-- `lone-vyi` [open] task: Add property-based tests for contract validation
-- `lone-wnq` [open] task: Add validation performance benchmarks
+---
 
-### `lone-336` Document Molecules work graph model (closed)
+### P0 — `lone-org` Lone Semantic Safety Engine: Contract-First Foundation
 
-Child issues:
+> **Why P0:** This is the core API contract. `bless(element)` → `BlessOk|BlessErr`,
+> `SemanticNode`, `Finding[]`, Zod schemas, and the POC harness. Everything
+> downstream depends on these contracts being stable.
 
-- `lone-808` [closed] task: Author Molecules: Work Graphs in Beads doc
-- `lone-ozl` [closed] task: Reference molecules workflow doc from AGENTS guidance
+Key deliverables:
+1. README positions Lone as semantic safety engine
+2. Zod schemas define typed HTMLElement input contracts
+3. Bless/reject API returns `SemanticNode` or `Finding[]` deterministically
+4. MDN good-semantics fixtures pass (zero findings)
+5. MDN bad-semantics fixtures produce stable `Finding.code` failures
+6. CI gate fails build on non-empty `Finding[]`
 
-### `lone-a6i` Beads reliability and workflow guardrails (open)
+`bd show lone-org` for full details.
 
-Design notes:
-Enforce a single canonical Beads universe (shared `BEADS_DIR` + sync branch)
-and add guardrails for worktrees, daemon behavior, and recovery workflows.
+---
 
-Acceptance criteria:
-1) Worktree confusion bugs resolved with documented runbook.
-2) Sync branch flow works from clean clone to push.
-3) Recovery path is validated for schema/daemon failures.
-4) Agent docs prevent accidental local DB divergence.
+### P0 — `lone-65r` Developer Tooling & Workflow Reliability
 
-Spec: `docs/ROADMAP.md`
+> **Why P0:** Broken tooling (SSH auth, beads bugs, worktree confusion) blocks
+> all other work. Must be stable before velocity on P1+ is meaningful.
 
-Child issues:
+Contains: `lone-a6i` (Beads reliability and workflow guardrails) as sub-epic.
 
-- `lone-a6i.1` [open] bug: beads-sync worktree missing bd-repair recovery path
-- `lone-a6i.2` [open] bug: Stale git index.lock blocks commit in main worktree
-- `lone-sam` [open] bug: bd doctor false-positive dirty tree with external BEADS_DIR
-- `lone-xfu` [open] bug: Worktree shows different issue set when direnv/BEADS_DIR not loaded
+`bd show lone-65r` for full details.
 
-### `lone-ba1` Create MDN accessibility testing checklist doc and automated tests (open)
+---
 
-Design notes:
-Translate the MDN accessibility checklist into a maintainable split of
-automated validators/tests and manual testing docs, with explicit ownership
-per checklist item.
+### P1 — `lone-pjd` Accessibility validator suite v1
 
-Acceptance criteria:
-1) Child tasks fully cover all checklist items.
-2) Automated checks are implemented where feasible and wired to CI.
-3) Manual-only checks have clear procedures in `docs/`.
-4) Checklist docs and tests stay aligned with validator outputs.
+> **Why P1:** Core project deliverable. Composes individual validators
+> (`SemanticNode` in, `Finding[]` out) into a deterministic pipeline.
 
-Spec: `docs/ROADMAP.md`
+Key deliverables:
+- All child validators passing tests
+- `validateAll` with deterministic, de-duplicated findings
+- CI integration
+- README shows how to run the pipeline
 
-Child issues:
+`bd show lone-pjd` for full details.
 
-- `lone-ba1.1` [open] task: Seed child task for MDN checklist epic
+---
 
-### `lone-kaz` Accessibility adapters and external engines (open)
+### P1 — `lone-mmp` Runtime Validation: Two-tier SSR + Client-side DOM validation
 
-Design notes:
-Normalize external accessibility sources (CDP, Puppeteer, Playwright, AOM,
-axe) into one deterministic `SemanticNode`/`Finding` contract boundary with
-adapter-specific fixtures.
+> **Why P1:** Defines the architectural split between intent (SSR) and
+> realization (DOM). Custom elements are the enforcement binding point.
 
-Acceptance criteria:
-1) Adapter tasks complete for targeted engines.
-2) Fixture-based tests prove stable normalization into `SemanticNode`.
-3) Cross-adapter comparisons document expected differences.
-4) Public adapter API is documented and versioned.
+Key deliverables:
+- SSR catches composition errors at build time
+- Client-side DOM validation fires in lifecycle callbacks (no innerHTML)
+- Lifecycle callback map documented (connectedCallback, attributeChangedCallback, disconnectedCallback)
 
-Spec: `docs/ROADMAP.md`
+`bd show lone-mmp` for full details.
 
-Child issues:
+---
 
-- `lone-931` [open] feature: Add runtime types for custom elements while keeping ElementSpec validation
-- `lone-cyc` [open] task: Puppeteer SerializedAXNode Zod schema + adapter to SemanticNode
-- `lone-h5h` [open] feature: Integrate Accessibility Object Model (AOM) APIs for tree introspection
-- `lone-ni6` [open] task: Playwright ARIA snapshot Zod schema + adapter to SemanticNode
-- `lone-tbz` [open] feature: Integrate axe-core for automated accessibility testing
+### P2 — `lone-aei` Light DOM Only: No Shadow DOM
 
-### `lone-pjd` Accessibility validator suite v1 (open)
+> **Why P2:** Architectural constraint that affects all wrapper design.
+> Accessibility thrives on legibility — shadow DOM trades legibility for
+> encapsulation, which is wrong for a validator.
 
-Design notes:
-Use a contract-first validator pipeline: each validator consumes
-`SemanticNode` and emits stable `Finding` objects; compose via `validateAll`
-with deterministic ordering and de-duplication.
+`bd show lone-aei` for full details.
 
-Acceptance criteria:
-1) All child validator tasks merged and passing tests.
-2) `validateAll` returns deterministic, de-duplicated findings with stable path ordering.
-3) CI includes validator suite and integration coverage.
-4) README/docs show how to run the full validator pipeline.
+---
 
-Spec: `docs/ROADMAP.md`
+### P2 — `lone-kaz` Accessibility adapters and external engines
 
-Child issues:
+> **Why P2:** Normalizes CDP, Puppeteer, Playwright, AOM, axe-core into one
+> `SemanticNode`/`Finding` boundary. Depends on `SemanticNode` contract from
+> `lone-org` being stable.
 
-- `lone-1wt` [open] task: Validator: Keyboard accessibility checker
-- `lone-4co` [open] feature: Create validator runner that combines all validators
-- `lone-blx` [open] task: Validator: Color contrast checker
-- `lone-dx4` [open] task: Test semantic HTML validator with MDN good-semantics.html example
-- `lone-fnx` [open] task: Integration test: validate complete accessible document
-- `lone-rjo` [open] task: Validator: Screen reader visible content checker
-- `lone-wke` [open] task: Validator: ARIA usage validator
-- `lone-z5w` [open] task: Validator: Text alternatives for non-text content
+`bd show lone-kaz` for full details.
+
+---
+
+### P2 — `lone-2il` Accessibility QA, docs, and hardening
+
+> **Why P2:** Test depth, benchmarks, error quality, and manual testing guides.
+> Meaningful only after validators exist.
+
+`bd show lone-2il` for full details.
+
+---
+
+### P3 — `lone-5w2` AX Template Persistence
+
+> **Why P3:** Future enhancement — save validated structures as HTML templates.
+> Requires the engine (lone-org) to be complete first.
+
+`bd show lone-5w2` for full details.
+
+---
+
+## Closed Epics
+
+| Epic | Notes |
+|------|-------|
+| `lone-1ps` Zod-typed content contracts | All 7 children closed |
+| `lone-336` Document Molecules work graph model | Complete |
