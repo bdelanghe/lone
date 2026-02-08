@@ -165,7 +165,7 @@ Deno.test("Finding messages - ARIA usage rules are actionable", () => {
     children: [
       n("div", { role: "checkbox" }),
       n("div", { role: "checkbox", props: { "aria-checked": "maybe" } }),
-      n("button", { role: "button" }),
+      n("button", { role: "button", props: { role: "button" } }),
       n("button", { role: "link" }),
       n("div", { role: "textbox", props: { "aria-labelledby": "missing-id" } }),
       n("div", { role: "status", props: { "aria-live": "nope" } }),
@@ -211,5 +211,7 @@ Deno.test("Finding messages - color contrast rules are actionable", () => {
 
   const findings = validateColorContrast(root);
 
-  assertMessageQuality(findByCode(findings, "LONE_COLOR_INSUFFICIENT_CONTRAST"));
+  assertMessageQuality(
+    findByCode(findings, "LONE_COLOR_INSUFFICIENT_CONTRAST"),
+  );
 });

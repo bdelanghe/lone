@@ -47,7 +47,7 @@ Deno.test("validateARIAUsage - flags redundant role", () => {
   const node: SemanticNodeType = {
     type: "button",
     role: "button",
-    props: {},
+    props: { role: "button" },
     children: [],
   };
 
@@ -75,7 +75,7 @@ Deno.test("validateARIAUsage - flags missing relationship target", () => {
   const node: SemanticNodeType = {
     type: "button",
     role: "button",
-    props: { "aria-labelledby": "missing-id" },
+    props: { role: "button", "aria-labelledby": "missing-id" },
     children: [],
   };
 

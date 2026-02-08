@@ -125,7 +125,9 @@ function checkAttributeValues(
       findings.push({
         code: "LONE_ARIA_INVALID_ATTRIBUTE_VALUE",
         path,
-        message: `Attribute ${attr} on role '${role}' must be one of: ${allowed.join(", ")}.`,
+        message: `Attribute ${attr} on role '${role}' must be one of: ${
+          allowed.join(", ")
+        }.`,
         severity: "error",
       });
     }
@@ -141,12 +143,20 @@ function checkRedundantRole(
   if (!role) {
     return;
   }
+  // Only flag when the role was explicitly set via a role attribute.
+  const explicitRole = typeof node.props?.role === "string"
+    ? node.props.role.trim()
+    : "";
+  if (!explicitRole) {
+    return;
+  }
   const redundantRoles = REDUNDANT_ROLE_BY_TYPE[node.type];
   if (redundantRoles?.includes(role)) {
     findings.push({
       code: "LONE_ARIA_REDUNDANT_ROLE",
       path,
-      message: `Role '${role}' is redundant on <${node.type}>. Remove the role attribute.`,
+      message:
+        `Role '${role}' is redundant on <${node.type}>. Remove the role attribute.`,
       severity: "warning",
     });
   }
@@ -183,10 +193,12 @@ function checkRelationships(
   const labelledBy = getStringProp(props, "aria-labelledby");
   const describedBy = getStringProp(props, "aria-describedby");
 
-  for (const relation of [
-    { key: "aria-labelledby", value: labelledBy },
-    { key: "aria-describedby", value: describedBy },
-  ]) {
+  for (
+    const relation of [
+      { key: "aria-labelledby", value: labelledBy },
+      { key: "aria-describedby", value: describedBy },
+    ]
+  ) {
     if (!relation.value) {
       continue;
     }

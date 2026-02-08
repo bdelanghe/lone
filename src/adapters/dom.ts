@@ -56,7 +56,10 @@ const TAG_ROLE_MAP: Record<string, string> = {
   main: "main",
 };
 
-function deriveName(props: Record<string, unknown>): string | undefined {
+function deriveName(
+  props: Record<string, unknown>,
+  textContent?: string | null,
+): string | undefined {
   const ariaLabel = props["aria-label"];
   if (typeof ariaLabel === "string" && ariaLabel.trim().length > 0) {
     return ariaLabel.trim();
@@ -70,6 +73,10 @@ function deriveName(props: Record<string, unknown>): string | undefined {
   const alt = props["alt"];
   if (typeof alt === "string" && alt.trim().length > 0) {
     return alt.trim();
+  }
+
+  if (typeof textContent === "string" && textContent.trim().length > 0) {
+    return textContent.trim();
   }
 
   return undefined;
@@ -87,7 +94,7 @@ export function domToSemanticNode(
 
   const node: SemanticNodeType = {
     type: tagName,
-    name: deriveName(props),
+    name: deriveName(props, element.textContent),
     role,
     props,
     children: [],
