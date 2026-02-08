@@ -14,12 +14,19 @@ fi
 BARE_REPO="$(git rev-parse --git-common-dir 2>/dev/null || true)"
 BARE_REPO="$(cd "${BARE_REPO}" && pwd -P)"
 
+# Resolve BEADS_DIR for issue tracking inside container
+BEADS_MOUNT_ARGS=()
+if [ -n "${BEADS_DIR:-}" ] && [ -d "${BEADS_DIR}" ]; then
+  BEADS_MOUNT_ARGS=(-v "${BEADS_DIR}:${BEADS_DIR}" -e "BEADS_DIR=${BEADS_DIR}")
+fi
+
 mkdir -p .xdg/cache
 
 exec docker run --rm -it \
   -v "$(pwd):${WORKDIR}" -w "${WORKDIR}" \
   -v "${BARE_REPO}:${BARE_REPO}" \
   -v "$(pwd)/.xdg/cache:/xdg/cache" \
+  "${BEADS_MOUNT_ARGS[@]}" \
   -e IN_DEV_CONTAINER=1 \
   -e XDG_CACHE_HOME=/xdg/cache \
   -e DENO_DIR=/xdg/cache/deno \
