@@ -117,7 +117,7 @@ export function validateFocusOrder(
     const curr = positiveTabOrder[i];
     if (curr.tabIndex < prev.tabIndex) {
       findings.push({
-        code: "TABINDEX_OUT_OF_ORDER",
+        code: "LONE_KEYBOARD_TABINDEX_OUT_OF_ORDER",
         path: curr.path,
         message:
           "Positive tabindex values must increase in document order for logical tabbing.",
@@ -143,7 +143,7 @@ export function validateKeyboardTraps(
       const handlers = getKeyboardHandlers(props);
       if (!handlers.has("escape") && props.escapeCloses !== true) {
         findings.push({
-          code: "KEYBOARD_TRAP",
+          code: "LONE_KEYBOARD_TRAP",
           path: currentPath,
           message:
             "Focusable element traps keyboard focus without an Escape exit. Add an Escape handler.",
@@ -169,7 +169,7 @@ function validateFocusable(
     if (interactive) {
       if (tabIndex !== null && tabIndex < 0) {
         findings.push({
-          code: "NEGATIVE_TABINDEX",
+          code: "LONE_KEYBOARD_NEGATIVE_TABINDEX",
           path: currentPath,
           message:
             "Interactive element has tabindex < 0 and is not reachable by Tab. Use tabindex=0 or remove the negative value.",
@@ -179,7 +179,7 @@ function validateFocusable(
 
       if (!isFocusable(node)) {
         findings.push({
-          code: "NOT_FOCUSABLE",
+          code: "LONE_KEYBOARD_NOT_FOCUSABLE",
           path: currentPath,
           message: "Interactive element must be focusable for keyboard access.",
           severity: "error",
@@ -189,7 +189,7 @@ function validateFocusable(
       const needsTabIndex = !isNativeInteractive(node) && tabIndex === null;
       if (needsTabIndex) {
         findings.push({
-          code: "MISSING_TABINDEX",
+          code: "LONE_KEYBOARD_MISSING_TABINDEX",
           path: currentPath,
           message:
             "Custom interactive element must define tabindex to be keyboard focusable.",
@@ -211,7 +211,7 @@ function validateFocusIndicators(
   walkTree(root, path, (node, currentPath) => {
     if (isFocusable(node) && node.props?.focusVisible === false) {
       findings.push({
-        code: "MISSING_FOCUS_INDICATOR",
+        code: "LONE_KEYBOARD_MISSING_FOCUS_INDICATOR",
         path: currentPath,
         message: "Focusable element should provide a visible focus indicator.",
         severity: "warning",
@@ -239,7 +239,7 @@ function validateKeyboardHandlers(
       const missing = required.filter((key) => !handlers.has(key));
       if (missing.length > 0) {
         findings.push({
-          code: "MISSING_KEYBOARD_HANDLER",
+          code: "LONE_KEYBOARD_MISSING_KEYBOARD_HANDLER",
           path: currentPath,
           message:
             `Missing keyboard activation keys: ${missing.join(", ")}. Add handlers for these keys.`,
@@ -254,7 +254,7 @@ function validateKeyboardHandlers(
           return;
         }
         findings.push({
-          code: "MISSING_ESCAPE_HANDLER",
+          code: "LONE_KEYBOARD_MISSING_ESCAPE_HANDLER",
           path: currentPath,
           message: "Modal dialog should close on Escape key.",
           severity: "error",
@@ -270,7 +270,7 @@ function validateKeyboardHandlers(
         handlers.has("arrowright");
       if (!hasArrow && (customInteractive || handlersProvided)) {
         findings.push({
-          code: "MISSING_ARROW_KEY_SUPPORT",
+          code: "LONE_KEYBOARD_MISSING_ARROW_KEY_SUPPORT",
           path: currentPath,
           message: "Widget should support arrow key navigation.",
           severity: "warning",

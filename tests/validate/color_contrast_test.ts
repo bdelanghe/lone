@@ -24,7 +24,7 @@ Deno.test("validateColorContrast - flags low contrast text", () => {
   const findings = validateColorContrast(node);
 
   assertEquals(findings.length, 1);
-  assertEquals(findings[0].code, "INSUFFICIENT_CONTRAST");
+  assertEquals(findings[0].code, "LONE_COLOR_INSUFFICIENT_CONTRAST");
 });
 
 Deno.test("validateColorContrast - allows large text at lower ratio", () => {
@@ -49,7 +49,7 @@ Deno.test("validateColorContrast - flags white on white", () => {
   const findings = validateColorContrast(node);
 
   assertEquals(findings.length, 1);
-  assertEquals(findings[0].code, "INSUFFICIENT_CONTRAST");
+  assertEquals(findings[0].code, "LONE_COLOR_INSUFFICIENT_CONTRAST");
 });
 
 Deno.test("validateColorContrast - uses non-text contrast threshold", () => {

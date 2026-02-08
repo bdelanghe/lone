@@ -23,7 +23,7 @@ export function validateNameRequired(
   if (INTERACTIVE_TYPES.has(root.type)) {
     if (!root.name || root.name === "") {
       findings.push({
-        code: "MISSING_NAME",
+        code: "LONE_NAME_MISSING",
         path,
         message: `Interactive element '${root.type}' must have a name.`,
         severity: "error",

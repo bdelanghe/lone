@@ -13,7 +13,7 @@ const actionRegex =
   /(must|should|use|add|provide|include|remove|ensure|avoid|requires|increase)/i;
 
 const exampleRequiredCodes = new Set([
-  "ARIA_INVALID_ATTRIBUTE_VALUE",
+  "LONE_ARIA_INVALID_ATTRIBUTE_VALUE",
 ]);
 
 function assertMessageQuality(finding: FindingType) {
@@ -77,15 +77,15 @@ Deno.test("Finding messages - semantic HTML rules are actionable", () => {
   const findings = validateSemanticHTML(root);
 
   [
-    "HEADING_LEVEL_SKIP",
-    "LINK_WITH_ONCLICK",
-    "LINK_WITHOUT_HREF",
-    "BUTTON_WITH_HREF",
-    "INVALID_LIST_CHILD",
-    "TH_MISSING_SCOPE",
-    "TABLE_MISSING_THEAD_TBODY",
-    "TABLE_MISSING_HEADERS",
-    "FORM_CONTROL_UNLABELED",
+    "LONE_SEMANTIC_HEADING_LEVEL_SKIP",
+    "LONE_SEMANTIC_LINK_WITH_ONCLICK",
+    "LONE_SEMANTIC_LINK_WITHOUT_HREF",
+    "LONE_SEMANTIC_BUTTON_WITH_HREF",
+    "LONE_SEMANTIC_INVALID_LIST_CHILD",
+    "LONE_SEMANTIC_TH_MISSING_SCOPE",
+    "LONE_SEMANTIC_TABLE_MISSING_THEAD_TBODY",
+    "LONE_SEMANTIC_TABLE_MISSING_HEADERS",
+    "LONE_SEMANTIC_FORM_CONTROL_UNLABELED",
   ].forEach((code) => assertMessageQuality(findByCode(findings, code)));
 });
 
@@ -94,13 +94,13 @@ Deno.test("Finding messages - heading warnings include h1 guidance", () => {
     n("div", { children: [n("h2", { role: "heading" })] }),
   );
 
-  assertMessageQuality(findByCode(findings, "MISSING_H1"));
+  assertMessageQuality(findByCode(findings, "LONE_SEMANTIC_MISSING_H1"));
 });
 
 Deno.test("Finding messages - name required rules are actionable", () => {
   const findings = validateNameRequired(n("button"));
 
-  assertMessageQuality(findByCode(findings, "MISSING_NAME"));
+  assertMessageQuality(findByCode(findings, "LONE_NAME_MISSING"));
 });
 
 Deno.test("Finding messages - keyboard accessibility rules are actionable", () => {
@@ -124,15 +124,15 @@ Deno.test("Finding messages - keyboard accessibility rules are actionable", () =
   const findings = validateKeyboardAccessible(root);
 
   [
-    "NEGATIVE_TABINDEX",
-    "NOT_FOCUSABLE",
-    "MISSING_TABINDEX",
-    "MISSING_KEYBOARD_HANDLER",
-    "MISSING_ESCAPE_HANDLER",
-    "MISSING_ARROW_KEY_SUPPORT",
-    "TABINDEX_OUT_OF_ORDER",
-    "KEYBOARD_TRAP",
-    "MISSING_FOCUS_INDICATOR",
+    "LONE_KEYBOARD_NEGATIVE_TABINDEX",
+    "LONE_KEYBOARD_NOT_FOCUSABLE",
+    "LONE_KEYBOARD_MISSING_TABINDEX",
+    "LONE_KEYBOARD_MISSING_KEYBOARD_HANDLER",
+    "LONE_KEYBOARD_MISSING_ESCAPE_HANDLER",
+    "LONE_KEYBOARD_MISSING_ARROW_KEY_SUPPORT",
+    "LONE_KEYBOARD_TABINDEX_OUT_OF_ORDER",
+    "LONE_KEYBOARD_TRAP",
+    "LONE_KEYBOARD_MISSING_FOCUS_INDICATOR",
   ].forEach((code) => assertMessageQuality(findByCode(findings, code)));
 });
 
@@ -151,12 +151,12 @@ Deno.test("Finding messages - text alternatives rules are actionable", () => {
   const findings = validateTextAlternatives(root);
 
   [
-    "MISSING_ALT",
-    "EMPTY_ALT_MEANINGFUL",
-    "MISSING_SVG_TEXT_ALTERNATIVE",
-    "MISSING_MEDIA_TEXT_ALTERNATIVE",
-    "ICON_BUTTON_MISSING_LABEL",
-    "MISSING_FALLBACK_CONTENT",
+    "LONE_TEXT_MISSING_ALT",
+    "LONE_TEXT_EMPTY_ALT_MEANINGFUL",
+    "LONE_TEXT_MISSING_SVG_ALT",
+    "LONE_TEXT_MISSING_MEDIA_ALT",
+    "LONE_TEXT_ICON_BUTTON_MISSING_LABEL",
+    "LONE_TEXT_MISSING_FALLBACK_CONTENT",
   ].forEach((code) => assertMessageQuality(findByCode(findings, code)));
 });
 
@@ -175,12 +175,12 @@ Deno.test("Finding messages - ARIA usage rules are actionable", () => {
   const findings = validateARIAUsage(root);
 
   [
-    "ARIA_REQUIRED_ATTRIBUTE_MISSING",
-    "ARIA_INVALID_ATTRIBUTE_VALUE",
-    "REDUNDANT_ROLE",
-    "CONFLICTING_ROLE",
-    "ARIA_RELATIONSHIP_MISSING_TARGET",
-    "ARIA_LIVE_INVALID",
+    "LONE_ARIA_REQUIRED_ATTRIBUTE_MISSING",
+    "LONE_ARIA_INVALID_ATTRIBUTE_VALUE",
+    "LONE_ARIA_REDUNDANT_ROLE",
+    "LONE_ARIA_CONFLICTING_ROLE",
+    "LONE_ARIA_RELATIONSHIP_MISSING_TARGET",
+    "LONE_ARIA_LIVE_INVALID",
   ].forEach((code) => assertMessageQuality(findByCode(findings, code)));
 });
 
@@ -197,10 +197,10 @@ Deno.test("Finding messages - screen reader content rules are actionable", () =>
   const findings = validateScreenReaderContent(root);
 
   [
-    "CONTENT_HIDDEN_FROM_SR",
-    "INTERACTIVE_HIDDEN",
-    "ARIA_HIDDEN_FOCUSABLE",
-    "SR_ONLY_NO_TEXT",
+    "LONE_SR_CONTENT_HIDDEN",
+    "LONE_SR_INTERACTIVE_HIDDEN",
+    "LONE_SR_ARIA_HIDDEN_FOCUSABLE",
+    "LONE_SR_ONLY_NO_TEXT",
   ].forEach((code) => assertMessageQuality(findByCode(findings, code)));
 });
 
@@ -211,5 +211,5 @@ Deno.test("Finding messages - color contrast rules are actionable", () => {
 
   const findings = validateColorContrast(root);
 
-  assertMessageQuality(findByCode(findings, "INSUFFICIENT_CONTRAST"));
+  assertMessageQuality(findByCode(findings, "LONE_COLOR_INSUFFICIENT_CONTRAST"));
 });

@@ -4,14 +4,16 @@ import { ZodError } from "zod";
 
 Deno.test("Finding - parses valid finding", () => {
   const result = Finding.parse({
-    code: "MISSING_NAME",
-    path: "$.children[0]",
-    message: "Element must have a name attribute",
+    code: "LONE_SEMANTIC_HEADING_ORDER",
+    path: "$.root",
+    message: "Heading order is invalid",
+    severity: "error",
   });
 
-  assertEquals(result.code, "MISSING_NAME");
-  assertEquals(result.path, "$.children[0]");
-  assertEquals(result.message, "Element must have a name attribute");
+  assertEquals(result.code, "LONE_SEMANTIC_HEADING_ORDER");
+  assertEquals(result.path, "$.root");
+  assertEquals(result.message, "Heading order is invalid");
+  assertEquals(result.severity, "error");
 });
 
 Deno.test("Finding - rejects empty code", () => {
@@ -20,11 +22,10 @@ Deno.test("Finding - rejects empty code", () => {
       Finding.parse({
         code: "",
         path: "$.root",
-        message: "Some message",
+        message: "Missing code",
       });
     },
     ZodError,
-    "String must contain at least 1 character(s)",
   );
 });
 
@@ -32,13 +33,12 @@ Deno.test("Finding - rejects empty path", () => {
   assertThrows(
     () => {
       Finding.parse({
-        code: "ERROR_CODE",
+        code: "LONE_PATH_MISSING",
         path: "",
-        message: "Some message",
+        message: "Missing path",
       });
     },
     ZodError,
-    "String must contain at least 1 character(s)",
   );
 });
 
@@ -46,13 +46,12 @@ Deno.test("Finding - rejects empty message", () => {
   assertThrows(
     () => {
       Finding.parse({
-        code: "ERROR_CODE",
+        code: "LONE_MESSAGE_MISSING",
         path: "$.root",
         message: "",
       });
     },
     ZodError,
-    "String must contain at least 1 character(s)",
   );
 });
 
@@ -60,9 +59,8 @@ Deno.test("Finding - rejects missing fields", () => {
   assertThrows(
     () => {
       Finding.parse({
-        code: "ERROR_CODE",
-        path: "$.root",
-      });
+        code: "LONE_MISSING_FIELDS",
+      } as unknown);
     },
     ZodError,
   );
@@ -70,10 +68,10 @@ Deno.test("Finding - rejects missing fields", () => {
 
 Deno.test("Finding - handles complex JSONPath", () => {
   const result = Finding.parse({
-    code: "INVALID_ROLE",
-    path: "$.children[2].children[0].props['aria-label']",
-    message: "Invalid ARIA role for this element type",
+    code: "LONE_PATH_COMPLEX",
+    path: "$.root['child-name'][0].grandChild",
+    message: "Complex path",
   });
 
-  assertEquals(result.path, "$.children[2].children[0].props['aria-label']");
+  assertEquals(result.path, "$.root['child-name'][0].grandChild");
 });

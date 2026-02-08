@@ -12,7 +12,7 @@ Deno.test("validateTextAlternatives - flags img without alt", () => {
   const findings = validateTextAlternatives(node);
 
   assertEquals(findings.length, 1);
-  assertEquals(findings[0].code, "MISSING_ALT");
+  assertEquals(findings[0].code, "LONE_TEXT_MISSING_ALT");
 });
 
 Deno.test("validateTextAlternatives - flags empty alt on meaningful image", () => {
@@ -25,7 +25,7 @@ Deno.test("validateTextAlternatives - flags empty alt on meaningful image", () =
   const findings = validateTextAlternatives(node);
 
   assertEquals(findings.length, 1);
-  assertEquals(findings[0].code, "EMPTY_ALT_MEANINGFUL");
+  assertEquals(findings[0].code, "LONE_TEXT_EMPTY_ALT_MEANINGFUL");
 });
 
 Deno.test("validateTextAlternatives - allows decorative image with empty alt", () => {
@@ -51,7 +51,7 @@ Deno.test("validateTextAlternatives - flags svg without label", () => {
   const findings = validateTextAlternatives(node);
 
   assertEquals(findings.length, 1);
-  assertEquals(findings[0].code, "MISSING_SVG_TEXT_ALTERNATIVE");
+  assertEquals(findings[0].code, "LONE_TEXT_MISSING_SVG_ALT");
 });
 
 Deno.test("validateTextAlternatives - passes svg with title", () => {
@@ -76,7 +76,7 @@ Deno.test("validateTextAlternatives - flags icon-only button without label", () 
   const findings = validateTextAlternatives(node);
 
   assertEquals(findings.length, 1);
-  assertEquals(findings[0].code, "ICON_BUTTON_MISSING_LABEL");
+  assertEquals(findings[0].code, "LONE_TEXT_ICON_BUTTON_MISSING_LABEL");
 });
 
 Deno.test("validateTextAlternatives - passes icon-only button with aria-label", () => {
@@ -101,7 +101,7 @@ Deno.test("validateTextAlternatives - flags canvas without fallback", () => {
   const findings = validateTextAlternatives(node);
 
   assertEquals(findings.length, 1);
-  assertEquals(findings[0].code, "MISSING_FALLBACK_CONTENT");
+  assertEquals(findings[0].code, "LONE_TEXT_MISSING_FALLBACK_CONTENT");
 });
 
 Deno.test("validateTextAlternatives - passes canvas with fallback child", () => {
@@ -133,7 +133,7 @@ Deno.test("validateTextAlternatives - flags media without captions", () => {
   const findings = validateTextAlternatives(node);
 
   assertEquals(findings.length, 1);
-  assertEquals(findings[0].code, "MISSING_MEDIA_TEXT_ALTERNATIVE");
+  assertEquals(findings[0].code, "LONE_TEXT_MISSING_MEDIA_ALT");
 });
 
 Deno.test("validateTextAlternatives - passes media with transcript", () => {

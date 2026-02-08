@@ -26,7 +26,7 @@ Deno.test("validateARIAUsage - flags missing required aria attribute", () => {
   const findings = validateARIAUsage(node);
 
   assertEquals(findings.length, 1);
-  assertEquals(findings[0].code, "ARIA_REQUIRED_ATTRIBUTE_MISSING");
+  assertEquals(findings[0].code, "LONE_ARIA_REQUIRED_ATTRIBUTE_MISSING");
 });
 
 Deno.test("validateARIAUsage - flags invalid aria attribute value", () => {
@@ -40,7 +40,7 @@ Deno.test("validateARIAUsage - flags invalid aria attribute value", () => {
   const findings = validateARIAUsage(node);
 
   assertEquals(findings.length, 1);
-  assertEquals(findings[0].code, "ARIA_INVALID_ATTRIBUTE_VALUE");
+  assertEquals(findings[0].code, "LONE_ARIA_INVALID_ATTRIBUTE_VALUE");
 });
 
 Deno.test("validateARIAUsage - flags redundant role", () => {
@@ -54,7 +54,7 @@ Deno.test("validateARIAUsage - flags redundant role", () => {
   const findings = validateARIAUsage(node);
 
   assertEquals(findings.length, 1);
-  assertEquals(findings[0].code, "REDUNDANT_ROLE");
+  assertEquals(findings[0].code, "LONE_ARIA_REDUNDANT_ROLE");
 });
 
 Deno.test("validateARIAUsage - flags conflicting role", () => {
@@ -68,7 +68,7 @@ Deno.test("validateARIAUsage - flags conflicting role", () => {
   const findings = validateARIAUsage(node);
 
   assertEquals(findings.length, 1);
-  assertEquals(findings[0].code, "CONFLICTING_ROLE");
+  assertEquals(findings[0].code, "LONE_ARIA_CONFLICTING_ROLE");
 });
 
 Deno.test("validateARIAUsage - flags missing relationship target", () => {
@@ -82,8 +82,8 @@ Deno.test("validateARIAUsage - flags missing relationship target", () => {
   const findings = validateARIAUsage(node);
 
   assertEquals(findings.length, 2);
-  assertEquals(findings[0].code, "REDUNDANT_ROLE");
-  assertEquals(findings[1].code, "ARIA_RELATIONSHIP_MISSING_TARGET");
+  assertEquals(findings[0].code, "LONE_ARIA_REDUNDANT_ROLE");
+  assertEquals(findings[1].code, "LONE_ARIA_RELATIONSHIP_MISSING_TARGET");
 });
 
 Deno.test("validateARIAUsage - passes aria-labelledby when target exists", () => {
@@ -116,5 +116,5 @@ Deno.test("validateARIAUsage - flags invalid aria-live", () => {
   const findings = validateARIAUsage(node);
 
   assertEquals(findings.length, 1);
-  assertEquals(findings[0].code, "ARIA_LIVE_INVALID");
+  assertEquals(findings[0].code, "LONE_ARIA_LIVE_INVALID");
 });
