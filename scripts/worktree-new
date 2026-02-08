@@ -11,7 +11,7 @@ runs a Beads health check in that worktree.
 
 Options:
   --base <ref>         Base ref for new branches (default: origin/main)
-  --prefix <prefix>    Branch prefix (default: codex)
+  --prefix <prefix>    Branch prefix (default: none)
   --root <path>        Worktree root directory (default: parent of shared "main")
   --allow-dirty        Skip clean-check for the shared "main" worktree
   --skip-fetch         Skip `git fetch origin`
@@ -129,7 +129,7 @@ find_worktree_for_branch() {
 
 main() {
   local base="origin/main"
-  local prefix="codex"
+  local prefix=""
   local root=""
   local allow_dirty=0
   local skip_fetch=0
@@ -215,7 +215,10 @@ main() {
     exit 1
   fi
 
-  local branch="$prefix/$task_slug"
+  local branch="$task_slug"
+  if [ -n "$prefix" ]; then
+    branch="$prefix/$task_slug"
+  fi
 
   local repo_root
   repo_root="$(git rev-parse --show-toplevel)"
