@@ -101,12 +101,28 @@ Examples of confusion that require beads issues:
 **These problems should NEVER happen.** When they do, file an issue so we can
 fix the developer experience for all future agents.
 
+## Starting Development
+
+```bash
+./scripts/shell
+```
+
+This is the single entry point. It will:
+- Build the `semantic-test` image automatically if missing
+- Mount the workspace, git bare repo (worktree support), and Deno cache
+- Mount `BEADS_DIR` so `bd` works inside the container
+- Drop you into bash with `deno`, `bd`, `bdui`, `claude`, and `codex` available
+
+From inside the container, all scripts are container-aware (`IN_DEV_CONTAINER=1`)
+and run directly without re-launching Docker.
+
+To rebuild the image after Dockerfile changes:
+
+```bash
+docker build -t semantic-test -f .devcontainer/Dockerfile .
+```
+
 ## Running Tests
-
-This project uses a single canonical test wrapper for consistent docker-based
-execution.
-
-### Quick Commands
 
 ```bash
 test                  # Canonical way - run all tests in docker (shows last 30 lines)
@@ -114,19 +130,7 @@ test                  # Canonical way - run all tests in docker (shows last 30 l
 deno task test:docker # Via deno tasks (optional)
 ```
 
-**Why this works:**
-
-- `scripts/test` is the single source of truth for docker test invocation
-- `.envrc` adds `scripts/` to PATH (so `test` just works when direnv is active)
-- Mounts `.xdg/` directories for Deno/npm cache persistence across runs
-
-### First-Time Setup
-
-Build the test container once:
-
-```bash
-docker build -t semantic-test -f .devcontainer/Dockerfile .
-```
+Works from host or inside the container (`scripts/test` detects which context).
 
 If using direnv interactively:
 
