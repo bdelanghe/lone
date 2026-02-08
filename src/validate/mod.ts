@@ -8,4 +8,5 @@ export {
   validateKeyboardTraps,
 } from "./keyboard_accessible.ts";
 export { validateARIAUsage } from "./aria_usage.ts";
+export { validateScreenReaderContent } from "./screen_reader_content.ts";
 export { validateTextAlternatives } from "./text_alternatives.ts";

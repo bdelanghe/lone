@@ -660,6 +660,29 @@ const findings = validateARIAUsage(node);
 - Conflicting roles with native semantics are errors
 - Missing relationship targets are errors
 
+### Screen Reader Content Validator
+
+The screen reader content validator flags content hidden from assistive
+technology and detects misuse of `aria-hidden` on focusable elements.
+
+```typescript
+import { validateScreenReaderContent } from "../src/validate/screen_reader_content.ts";
+
+const findings = validateScreenReaderContent(node);
+```
+
+**Supported props**
+- `display`, `visibility`, `hidden`: visibility controls
+- `class` / `className`: visually hidden class detection (`sr-only`, `visually-hidden`)
+- `aria-hidden`: intentional screen-reader hiding
+- `tabIndex` / `tabindex`, `focusable`: focusability checks
+
+**Behavior highlights**
+- Flags `display:none` and `visibility:hidden` content
+- Errors on `aria-hidden` when the element is focusable
+- Warns if visually hidden content has no meaningful text
+- Flags hidden interactive elements
+
 ---
 
 ## References
