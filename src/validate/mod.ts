@@ -7,4 +7,5 @@ export {
   validateKeyboardAccessible,
   validateKeyboardTraps,
 } from "./keyboard_accessible.ts";
+export { validateARIAUsage } from "./aria_usage.ts";
 export { validateTextAlternatives } from "./text_alternatives.ts";

@@ -636,6 +636,30 @@ const findings = validateTextAlternatives(node);
 - Icon-only controls must provide an accessible label
 - Canvas/iframe must include fallback content
 
+### ARIA Usage Validator
+
+The ARIA validator checks role usage, required attributes, and relationships
+between ARIA labels and target IDs.
+
+```typescript
+import { validateARIAUsage } from "../src/validate/aria_usage.ts";
+
+const findings = validateARIAUsage(node);
+```
+
+**Supported props**
+- `aria-checked`, `aria-expanded`, `aria-valuenow`, `aria-valuemin`,
+  `aria-valuemax`: required role attributes
+- `aria-labelledby` / `aria-describedby`: relationship targets (must exist)
+- `aria-live`: live region settings (`off`, `polite`, `assertive`)
+
+**Behavior highlights**
+- Missing required ARIA attributes are errors
+- Invalid ARIA attribute values are errors
+- Redundant role usage is warned (e.g., `role="button"` on `<button>`)
+- Conflicting roles with native semantics are errors
+- Missing relationship targets are errors
+
 ---
 
 ## References
