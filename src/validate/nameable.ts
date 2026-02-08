@@ -25,7 +25,7 @@ export function validateNameRequired(
       findings.push({
         code: "MISSING_NAME",
         path,
-        message: `Interactive element '${root.type}' must have a name`,
+        message: `Interactive element '${root.type}' must have a name.`,
         severity: "error",
       });
     }

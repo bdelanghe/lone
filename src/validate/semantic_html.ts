@@ -80,7 +80,7 @@ function validateHeadingHierarchy(
     findings.push({
       code: "MISSING_H1",
       path: rootPath,
-      message: "Document should have at least one h1 heading",
+      message: "Document should have at least one h1 heading.",
       severity: "warning",
     });
   }
@@ -183,7 +183,7 @@ function validateListStructure(
             code: "INVALID_LIST_CHILD",
             path: `${currentPath}.children[${index}]`,
             message:
-              `List child must be <li> or role="listitem", found type="${child.type}"`,
+              `List child must be <li> or role="listitem", found type="${child.type}".`,
             severity: "error",
           });
         }
@@ -234,7 +234,7 @@ function validateTableSemantics(
                 code: "TH_MISSING_SCOPE",
                 path: containerPath,
                 message:
-                  "<th> elements should have scope attribute (row, col, rowgroup, colgroup)",
+                  "Header cells (<th>) should have scope attribute (row, col, rowgroup, colgroup).",
                 severity: "warning",
               });
             }
@@ -274,7 +274,7 @@ function validateTableSemantics(
           code: "TABLE_MISSING_THEAD_TBODY",
           path: currentPath,
           message:
-            "Complex tables should use <thead> and <tbody> for better structure",
+            "Complex tables should use <thead> and <tbody> for better structure.",
           severity: "info",
         });
       }
@@ -285,7 +285,7 @@ function validateTableSemantics(
           code: "TABLE_MISSING_HEADERS",
           path: currentPath,
           message:
-            "Tables should have header cells (<th> or role='columnheader/rowheader')",
+            "Tables should have header cells (<th> or role='columnheader/rowheader').",
           severity: "warning",
         });
       }
@@ -351,7 +351,7 @@ function validateFormLabels(
           code: "FORM_CONTROL_UNLABELED",
           path: currentPath,
           message:
-            "Form control should have associated <label>, aria-label, or aria-labelledby",
+            "Form control should have associated <label>, aria-label, or aria-labelledby.",
           severity: "error",
         });
       }

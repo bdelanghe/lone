@@ -146,7 +146,7 @@ export function validateKeyboardTraps(
           code: "KEYBOARD_TRAP",
           path: currentPath,
           message:
-            "Focusable element traps keyboard focus without an Escape exit.",
+            "Focusable element traps keyboard focus without an Escape exit. Add an Escape handler.",
           severity: "error",
         });
       }
@@ -171,7 +171,8 @@ function validateFocusable(
         findings.push({
           code: "NEGATIVE_TABINDEX",
           path: currentPath,
-          message: "Interactive element has tabindex < 0 and is not reachable by Tab.",
+          message:
+            "Interactive element has tabindex < 0 and is not reachable by Tab. Use tabindex=0 or remove the negative value.",
           severity: "error",
         });
       }
@@ -240,7 +241,8 @@ function validateKeyboardHandlers(
         findings.push({
           code: "MISSING_KEYBOARD_HANDLER",
           path: currentPath,
-          message: `Missing keyboard activation keys: ${missing.join(", ")}.`,
+          message:
+            `Missing keyboard activation keys: ${missing.join(", ")}. Add handlers for these keys.`,
           severity: "error",
         });
       }
