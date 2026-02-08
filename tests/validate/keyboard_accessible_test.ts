@@ -89,7 +89,7 @@ Deno.test("validateKeyboardAccessible - requires arrow keys for widgets", () => 
 Deno.test("validateKeyboardAccessible - flags keyboard traps without escape", () => {
   const node: SemanticNodeType = {
     type: "div",
-    role: "dialog",
+    role: "region",
     props: { keyboardTrap: true, keyboardHandlers: ["Enter"] },
     children: [],
   };

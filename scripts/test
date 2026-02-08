@@ -18,4 +18,4 @@ docker run --rm \
   -e DENO_DIR=/xdg/cache/deno \
   -e NPM_CONFIG_CACHE=/xdg/cache/npm \
   "${IMAGE}" \
-  bash -lc 'deno test -A 2>&1 | tail -n 30; exit ${PIPESTATUS[0]}'
+  bash -lc 'deno test -A --fail-fast tests 2>&1 | tail -n 30; exit ${PIPESTATUS[0]}'
