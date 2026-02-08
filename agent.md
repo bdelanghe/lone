@@ -158,6 +158,19 @@ deno test -A
 
 The `scripts/test` wrapper remains as compatibility for host-based execution.
 
+## Epic Workflow (Feature Branch + PR)
+
+Treat each epic as its own feature branch. Complete all child work for the epic
+before closing it, then open a PR into `main` for review and merge.
+
+Minimum steps:
+
+1. Ensure all epic child issues are closed (or explicitly deferred with a
+   follow-up issue).
+2. Run required quality gates (docker tests at minimum).
+3. Push the epic branch.
+4. Create a PR into `main` with a clear summary and linked beads issues.
+
 ## Landing the Plane (Session Completion)
 
 **When ending a work session**, you MUST complete ALL steps below. Work is NOT
